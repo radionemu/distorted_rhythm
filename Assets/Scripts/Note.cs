@@ -23,6 +23,7 @@ public class Note : MonoBehaviour
         _noteSpeed = _sync._hiSpeed / (60/_sync.musicBPM);
         timer += Time.smoothDeltaTime;
         StartCoroutine(NoteScroll());
+        
     }
 
     IEnumerator NoteScroll(){
