@@ -43,9 +43,9 @@ public class Sync : MonoBehaviour
         userSpeedRate = 1f;
 
         musicBPM = 144f;
-        // 현재곡의 주파수값
-        frequency = music.clip.frequency;
-        // 시작점
+        //frequency of current music
+        frequency = music.clip.frequency;//Integer
+        // start point of music 
         offset = 1.72f;
         // 시작점 초를 샘플로 변환
         offsetForSample = frequency * offset;
@@ -66,7 +66,7 @@ public class Sync : MonoBehaviour
     }
 
     void Update() {
-        //StartCoroutine(PlayTik());    
+        StartCoroutine(PlayTik());    
     }
 
     IEnumerator PlayTik()

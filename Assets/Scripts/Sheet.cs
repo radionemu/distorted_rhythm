@@ -32,4 +32,8 @@ public class Sheet : MonoBehaviour
     {
         
     }
+
+    bool isStringEpsilon(string str){
+        return str.Length == 0;
+    }
 }

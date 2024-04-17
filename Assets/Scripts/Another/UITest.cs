@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UITest : MonoBehaviour
 {
-    public Text _text;
+    public TextMeshProUGUI text;
     Sheet _sheet;
 
     // Start is called before the first frame update
@@ -18,10 +19,10 @@ public class UITest : MonoBehaviour
     void Update()
     {
         if(_sheet == null){
-            Debug.Log("시발 이게 왜 없노");
+            text.text = "no Data found";
         }
         else{
-            _text.text = _sheet.Title + _sheet.Artist + _sheet.Genre +  _sheet.Difficulty.ToString();           
+            text.text = _sheet.Title + _sheet.Artist + _sheet.Genre +  _sheet.Difficulty.ToString();           
         }
 
     }
