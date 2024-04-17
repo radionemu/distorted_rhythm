@@ -24,7 +24,7 @@ public class NoteParse : MonoBehaviour
     void Start()
     {
         _sheet = GameObject.Find("Sheet").GetComponent<Sheet>();
-        txtFile = Resources.Load("File") as TextAsset;
+        txtFile = Resources.Load("File 1") as TextAsset;
         stringReader = new StringReader(txtFile.text);
         ReadFile();
     }

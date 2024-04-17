@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Sync : MonoBehaviour
 {
-    public float musicBPM = 144f;
+    public float musicBPM = 150f;
 
     public float _hiSpeed = 10f;
 
@@ -42,7 +42,7 @@ public class Sync : MonoBehaviour
         scrollSpeed = 10.0f;
         userSpeedRate = 1f;
 
-        musicBPM = 144f;
+        musicBPM = 150f;
         //frequency of current music
         frequency = music.clip.frequency;//Integer
         // start point of music 

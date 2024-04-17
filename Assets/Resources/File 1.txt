@@ -1,0 +1,21 @@
+[FileInfo]
+Version:0.0.1
+FileName:Filename
+ImageName:Image.jpg
+BPM:150
+BeatBar:4
+Offset:1.73
+
+[ContentInfo]
+Title:MilK
+Artist:モリモリあつし
+Genre:Future Bass
+Difficulty:1
+
+[NoteInfo]
+Note(1, 0)
+Note(4, 1.75)
+Note(3, 2.5)
+TurntableShort(1, 0)
+
+[EOF]

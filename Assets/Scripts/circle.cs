@@ -3,25 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class circle : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
+public class Circle : MonoBehaviour
 {
     private bool isactive;
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        Debug.Log("OnPointerClick");
-    }
+    private int id;
 
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        Debug.Log("OnPointerDown");
-    }
-
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        Debug.Log("OnPointerUp");
-    }
 
     private void Awake() {
         isactive = false;
+    }
+
+    public void SetID(int id){
+        this.id = id;
+    }
+
+    public int getID(){
+        return id;
     }
 }
