@@ -2,20 +2,38 @@
 Version:0.0.1
 FileName:Filename
 ImageName:Image.jpg
-BPM:150
-BeatBar:4
-Offset:1.73
+BPM:144
+beatNom:4
+beatDenom:4
+Offset:0
 
 [ContentInfo]
-Title:MilK
-Artist:モリモリあつし
-Genre:Future Bass
+Title:Routing
+Artist:Camellia
+Genre:JAZZY-ELECTRO
 Difficulty:1
 
+###NOTE FORMAT###
+#Note(Type, Lane, Section, nom, denom)
+###TYPE###
+# NM : Note
+# CS : Charge Note Start
+# CE : Charge Note End
+# MT : Mute Note
+###CONTROL CODE###
+#SOFLAN(BPM)
+#SOFBEAT(nom, denom)
+
 [NoteInfo]
-Note(1, 0)
-Note(4, 1.75)
-Note(3, 2.5)
-TurntableShort(1, 0)
+Note(NM, 1, 1, 0, 4)
+Note(NM, 2, 1, 1, 4)
+Note(NM, 3, 1, 2, 4)
+Note(NM, 4, 1, 3, 4)
+
+Note(CS, 2, 2, 1, 4)
+Note(CE, 2, 2, 2, 4)
+Note(CS, 3, 2, 2, 4)
+Note(CE, 3, 2, 3, 4)
+Note(MT, 4, 2, 3, 4)
 
 [EOF]

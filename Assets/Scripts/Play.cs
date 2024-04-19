@@ -18,8 +18,5 @@ public class Play : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(BPM._beatFull){
-            _soundManager.PlaySound(_tap, 1);
-        }
     }
 }

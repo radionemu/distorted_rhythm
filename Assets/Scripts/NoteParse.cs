@@ -6,11 +6,15 @@ using UnityEngine.UI;
 
 public class NoteParse : MonoBehaviour
 {
-    //UI TEST
-    
+    enum ParseArea{
+        FileInfo,
+        ContentInfo,
+        NoteInfo,
+        EOF
+    };
 
-    Sheet _sheet;
-    int i;
+    ParseArea mAreaState;
+    Sheet mSheet;
     public int spawnIndex;
     public bool spawnEnd;
 
@@ -23,7 +27,7 @@ public class NoteParse : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _sheet = GameObject.Find("Sheet").GetComponent<Sheet>();
+        mSheet = GameObject.Find("Sheet").GetComponent<Sheet>();
         txtFile = Resources.Load("File 1") as TextAsset;
         stringReader = new StringReader(txtFile.text);
         ReadFile();
@@ -35,38 +39,86 @@ public class NoteParse : MonoBehaviour
         
     }
 
-    //파일 리딩
-    //리딩 후 한 줄씩 파싱
-    //인식 후 배열에 추가
-
     void ReadFile(){
-        //변수 초기화
-
-        //파일 읽기
-
-
-        //라인 단위로 문자열로 저장
+        int i = 0;
+        int PCM = 0;
         while(true){
+            i++;
             line = stringReader.ReadLine();
-            //Debug.Log(line);
-            token = line.Split(':');
             
-            if(token[0] == "Version")   _sheet.Version = token[1];
-            else if(token[0] == "FileName") _sheet.FileName = token[1];
-            else if(token[0] == "ImageName")_sheet.ImageName = token[1];
-            else if(token[0] == "BPM")_sheet.BPM = float.Parse(token[1]);
-            else if(token[0] == "BeatBar") _sheet.BeatBar = int.Parse(token[1]);
-            else if(token[0] == "Offset") _sheet.Offset = float.Parse(token[1]);
-            else if(token[0] == "Title") _sheet.Title = token[1];
-            else if(token[0] == "Artist") _sheet.Artist = token[1];
-            else if(token[0] == "Genre") _sheet.Genre = token[1];
-            else if(token[0] == "Difficulty") _sheet.Difficulty = int.Parse(token[1]);
-            else if(line == "[NoteInfo]"){
-                //노트 해석
-                
+            //skippable
+            if(line.Length == 0) continue;
+            if(line[0] == '#'){
+                continue; //this is Comment
             }
-            if(line == "[EOF]"){
-                break;
+            
+            token = line.Split(':');
+            //indicate mode
+            if(line == "[FileInfo]"){
+                mAreaState = ParseArea.FileInfo;continue;
+            }else if(line == "[ContentInfo]"){
+                mAreaState = ParseArea.ContentInfo;continue;
+            }else if(line == "[NoteInfo]"){
+                mAreaState = ParseArea.NoteInfo;continue;
+            }else if(line == "[EOF]"){
+                mAreaState = ParseArea.EOF;
+            }
+            
+            if(mAreaState == ParseArea.FileInfo){
+                switch(token[0]){
+                    case "Version":
+                        mSheet.Version = token[1];
+                        break;
+                    case "FileName": 
+                        mSheet.FileName = token[1];
+                        break;
+                    case "ImageName": 
+                        mSheet.ImageName = token[1];
+                        break;
+                    case "BPM":
+                        mSheet.BPM = float.Parse(token[1]);
+                        break;
+                    case "beatNom":
+                        mSheet.beatNom = float.Parse(token[1]);
+                        break;
+                    case "beatDenom":
+                        mSheet.beatDenom = float.Parse(token[1]);
+                        break;
+                    case "Offset":
+                        mSheet.Offset = float.Parse(token[1]);
+                        break;
+                    default:
+                        break;
+                }
+            }else if(mAreaState == ParseArea.ContentInfo){
+                switch(token[0]){
+                    case "Title":
+                        mSheet.Title = token[1];
+                        break;
+                    case "Artist":
+                        mSheet.Artist = token[1];
+                        break;
+                    case "Genre":
+                        mSheet.Genre = token[1];
+                        break;
+                    case "Difficulty":
+                        mSheet.Difficulty = int.Parse(token[1]);
+                        break;
+                    default:
+                        break;
+                }
+            }else if(mAreaState == ParseArea.NoteInfo){
+                if(line[0..4]=="Note"){
+                    token = line[(line.IndexOf('(')+1)..line.IndexOf(')')].Split(',');
+                    mSheet.Notes.Add(new Note(token));//Check it Later
+                }else{
+                    Debug.LogError("Note info is not Correct in Line ["+i+"]!");
+                    continue;
+                }
+
+
+            }else if(mAreaState == ParseArea.EOF){
+                break; //break the loop
             }
         }
     }

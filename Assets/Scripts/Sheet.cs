@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class Sheet : MonoBehaviour
 {
+
     // [FileInfo]
     public string Version {set; get;}
     public string FileName  {set; get;}
     public string ImageName {set; get;}
     public float BPM    {set; get;}
-    public int BeatBar  {set; get;}
+    public float beatNom  {set; get;}
+    public float beatDenom  {set; get;}
     public float Offset {set; get;}
 
     // [Content Info]
@@ -19,7 +21,10 @@ public class Sheet : MonoBehaviour
     public int Difficulty   {set; get;}
 
     // [NoteInfo]
-    
+
+    public List<Note> Notes;
+
+    // [EOF]
 
     // Start is called before the first frame update
     void Start()
