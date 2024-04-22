@@ -6,10 +6,10 @@ public class Sync : MonoBehaviour
 {
 
     //ambiguous
-    public float HiSpeed = 10f;
+    public float HiSpeed;
 
     public float musicBPM = 150f; //BPM of MUSIC
-    float stdBPM = 60.0f; //one minutes
+    public float stdBPM = 60.0f; //one minutes
     
     //this mean total beat is 4/4
     float beatnom = 4.0f;
@@ -29,11 +29,11 @@ public class Sync : MonoBehaviour
     public float barPerSec = 0f;
     public float barPerSample = 0f;
 
-    float frequency = 0f;
+    float frequency = 0.2f;
     float nextSample = 0f;
     
-    public float offset;
-    public float offsetPCM;
+    public float offset = 0.000f;
+    public float offsetPCM = 7000f;
 
 
     void Start()
@@ -42,12 +42,10 @@ public class Sync : MonoBehaviour
         playTik = GetComponent<AudioSource>();
         music = GameObject.Find("Audio Source").GetComponent<AudioSource>();
 
-        HiSpeed = 10.0f;
         frequency = music.clip.frequency;//Integer
-        offset = 0.0f; //offset of start point
-        offsetPCM = frequency * offset;
+        // offsetPCM = frequency * offset;
         oneBeatTime = stdBPM / musicBPM * (beatnom / beatdenom);//delta sec for one beat
-        nextSample += offsetPCM; // next sample
+        // nextSample += offsetPCM; // next sample
         bitPerSec = stdBPM / (8 * musicBPM);
         bitPerSample = bitPerSec * music.clip.frequency;
         barPerSec = oneBeatTime * 4.0f;

@@ -6,24 +6,28 @@ using UnityEngine.UI;
 
 public class UITest : MonoBehaviour
 {
-    public TextMeshProUGUI text;
+    public TextMeshProUGUI Title;
+    public TextMeshProUGUI Artist;
+    public TextMeshProUGUI Genre;
     Sheet _sheet;
 
     // Start is called before the first frame update
     void Start()
     {
         _sheet = GameObject.Find("Sheet").GetComponent<Sheet>();
+
+        if(_sheet == null){
+            Title.text = "no Data found";
+        }
+        else{
+            Title.text = _sheet.Title;
+            Artist.text = _sheet.Artist;
+            Genre.text = _sheet.Genre;           
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(_sheet == null){
-            text.text = "no Data found";
-        }
-        else{
-            text.text = _sheet.Title + _sheet.Artist + _sheet.Genre +  _sheet.Difficulty.ToString();           
-        }
-
     }
 }

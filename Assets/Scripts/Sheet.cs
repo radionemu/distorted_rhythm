@@ -22,22 +22,9 @@ public class Sheet : MonoBehaviour
 
     // [NoteInfo]
 
-    public List<Note> Notes;
+    public List<Note> Notes = new();//init
 
     // [EOF]
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     bool isStringEpsilon(string str){
         return str.Length == 0;
     }

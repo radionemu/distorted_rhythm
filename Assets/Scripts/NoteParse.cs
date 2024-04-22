@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
+using System.Linq;
 
 public class NoteParse : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class NoteParse : MonoBehaviour
         EOF
     };
 
+    Judge mJudge;
     ParseArea mAreaState;
     Sheet mSheet;
     public int spawnIndex;
@@ -27,6 +29,7 @@ public class NoteParse : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        mJudge = GameObject.Find("JudgeManager").GetComponent<Judge>();
         mSheet = GameObject.Find("Sheet").GetComponent<Sheet>();
         txtFile = Resources.Load("File 1") as TextAsset;
         stringReader = new StringReader(txtFile.text);
@@ -111,6 +114,7 @@ public class NoteParse : MonoBehaviour
                 if(line[0..4]=="Note"){
                     token = line[(line.IndexOf('(')+1)..line.IndexOf(')')].Split(',');
                     mSheet.Notes.Add(new Note(token));//Check it Later
+                    //Have to Check Strictly 
                 }else{
                     Debug.LogError("Note info is not Correct in Line ["+i+"]!");
                     continue;
@@ -121,5 +125,8 @@ public class NoteParse : MonoBehaviour
                 break; //break the loop
             }
         }
+
+        //test code
+        // mJudge.InitQueue();
     }
 }

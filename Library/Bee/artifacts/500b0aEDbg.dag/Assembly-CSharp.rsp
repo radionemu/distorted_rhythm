@@ -341,13 +341,13 @@
 -analyzer:"C:/Program Files/Unity/Hub/Editor/2022.3.24f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 "Assets/Scripts/Another/Sync.cs"
 "Assets/Scripts/Another/UITest.cs"
-"Assets/Scripts/BPM.cs"
-"Assets/Scripts/Circle.cs"
 "Assets/Scripts/Circle/Circleinput.cs"
 "Assets/Scripts/Inputmanager.cs"
-"Assets/Scripts/Note.cs"
+"Assets/Scripts/Judge.cs"
 "Assets/Scripts/NoteManager.cs"
+"Assets/Scripts/NoteObj.cs"
 "Assets/Scripts/NoteParse.cs"
+"Assets/Scripts/Notes/Note.cs"
 "Assets/Scripts/Play.cs"
 "Assets/Scripts/Sheet.cs"
 "Assets/Scripts/SoundManager.cs"
@@ -386,6 +386,7 @@
 "Assets/TextMesh Pro/Examples & Extras/Scripts/VertexShakeB.cs"
 "Assets/TextMesh Pro/Examples & Extras/Scripts/VertexZoom.cs"
 "Assets/TextMesh Pro/Examples & Extras/Scripts/WarpTextExample.cs"
+"Assets/UIManager.cs"
 -langversion:9.0
 
 /deterministic

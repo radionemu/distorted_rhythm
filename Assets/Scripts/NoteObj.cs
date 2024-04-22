@@ -21,14 +21,14 @@ public class NoteObj : MonoBehaviour
     void Update()
     {
         HiSpeed();
-        _noteSpeed = _sync.HiSpeed / (60/_sync.musicBPM);
+        _noteSpeed = _sync.HiSpeed * (_sync.musicBPM/60.0f);
         timer += Time.smoothDeltaTime;
         StartCoroutine(NoteScroll());
         
     }
 
     IEnumerator NoteScroll(){
-        transform.Translate(new Vector3(0, -(_noteSpeed)*Time.smoothDeltaTime));
+        transform.Translate(new Vector3(0, -_noteSpeed*Time.smoothDeltaTime));
         yield return null;
     }
 
