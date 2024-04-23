@@ -7,12 +7,12 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    public List<Image> LaneButton;
-    public List<Image> LaneEffect;
+    public List<SpriteRenderer> LaneButton;
+    public List<SpriteRenderer> LaneEffect;
     public List<Color> oColor;
     public List<Color> tColor;
 
-    public List<Image> StrokeButton;
+    public List<SpriteRenderer> StrokeButton;
 
     private Inputmanager mIManager;
 
@@ -35,9 +35,11 @@ public class UIManager : MonoBehaviour
             if(mIManager.isDown[i]){
                 LaneButton[i].color = oColor[i];
                 LaneEffect[i].enabled = true;
+                LaneEffect[i].color = oColor[i];
             }else{
                 LaneButton[i].color = tColor[i];
                 LaneEffect[i].enabled = false;
+                LaneEffect[i].color = Color.white;
             }
         }
         for(int i=0; i<mIManager.isStroke.Count(); i++){
@@ -59,7 +61,8 @@ public class UIManager : MonoBehaviour
             JudgeType.MISS => "MISS",
             JudgeType.COK => "FULL CHARGE",
             JudgeType.CGOOD => "HALF CHARGE",
-            _ => ""
+            JudgeType.UNJUDGE => "+MISS",
+            _ => "INVALID"
         };
     }
 

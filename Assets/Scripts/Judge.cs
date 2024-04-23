@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 
@@ -124,7 +125,8 @@ public class Judge : MonoBehaviour
         return timing < pmRange && timing > -pmRange;
     }
 
-    public void reqJudge(bool [] inputButtons){
+    public void ReqJudge(bool [] inputButtons){
+        Row.Clear();
         int cSample = mAudio.music.timeSamples;
         //get Notes in Current Row
         
@@ -148,8 +150,10 @@ public class Judge : MonoBehaviour
                 Row.Add(note);
             }
         }
+
         if(Row.Count<=0)return;
 
+        // Debug.Log(reqButtons[0]+" "+reqButtons[1]+" "+reqButtons[2]+" "+reqButtons[3]);
         //check if button is mapped correctly
         bool isCorrect = true;
 
@@ -202,21 +206,22 @@ public class Judge : MonoBehaviour
 
         //After Judge
         foreach(Note note in Row){
-            if(tmpJudge == JudgeType.UNJUDGE) continue;
+            if(tmpJudge == JudgeType.UNJUDGE) break;
             mScoreMgr.ReqJudge2Score(tmpJudge, tmptiming);
             if(tmptiming == JudgeTiming.FAST && tmpJudge == JudgeType.MISS){
                 continue;
             }
-            if(note.nType==NoteType.CS){
+            if(note.nType==NoteType.CS && isCorrect){
                 int ind = note.lane-1;
                 charge[ind] = true;
                 isCharge = true;
                 Lanes[ind].Dequeue();
                 mNoteMgr.ReqChargeAdjust(note.objID);
-            }else{
+            }else if(note.nType==NoteType.NM || note.nType == NoteType.MT || (note.nType == NoteType.CS && !isCorrect)){
                 int ind = note.lane-1;
                 Lanes[ind].Dequeue();
-                Debug.Log(note.objID);
+                // Debug.Log("NOTE : "+ note.lane+" " +note.section+" " + note.nom +" "+note.denom);
+                // Debug.Log("NM Try to Destroy {"+note.objID+"}");
                 mNoteMgr.ReqDestroy(note.objID);
             }
         }
@@ -269,6 +274,7 @@ public class Judge : MonoBehaviour
                 Array.Fill(charge,false);
                 isCharge = false;
                 Lanes[ind].Dequeue();
+                // Debug.Log("CE Try to Destroy {"+note.objID+"}");
                 mNoteMgr.ReqDestroy(note.objID);
                 mScoreMgr.ReqJudge2Score(tmpJudge, tmptiming);
                 //UI req OK?

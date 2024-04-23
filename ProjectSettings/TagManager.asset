@@ -3,7 +3,11 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - BT-A
+  - BT-B
+  - BT-C
+  - BT-D
   layers:
   - Default
   - TransparentFX

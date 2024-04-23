@@ -16,7 +16,7 @@ public class NoteObj : MonoBehaviour
     
     //Coroutine Running Check
     public bool IENoteScaleRunning = false;
-    public bool IENoteScrollRunning = true;
+    public bool IENoteScrollRunning = false;
 
     // Start is called before the first frame update
     void Start()
@@ -48,7 +48,6 @@ public class NoteObj : MonoBehaviour
             transform.Translate(new Vector3(0, -_noteSpeed*Time.smoothDeltaTime));
             yield return null;
         }
-
     }
 
     public IEnumerator NoteScale(Transform JudgeLine){

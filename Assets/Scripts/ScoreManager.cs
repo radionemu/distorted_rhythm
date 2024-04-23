@@ -65,7 +65,7 @@ public class ScoreManager : MonoBehaviour
         if(jtype == JudgeType.OK || jtype== JudgeType.MISS){
             Combo = 0;
             CB++;
-        }else{
+        }else if(jtype == JudgeType.PGREAT || jtype == JudgeType.GREAT || jtype == JudgeType.GOOD){
             Combo++;
         }
 
