@@ -60,7 +60,6 @@ public class Sync : MonoBehaviour
 
     IEnumerator PlayTik()
     {   
-        // 초당 44100 샘플값 증가 프리퀀시값인 44100나누면 정확히 나눠떨어짐
         if (music.timeSamples >= nextSample)
         {
             playTik.PlayOneShot(tikClip); // 사운드 재생

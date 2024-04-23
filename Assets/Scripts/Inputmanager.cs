@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Inputmanager : MonoBehaviour
 {
-    public bool [] isDown = new bool [4];
+    public bool [] isDown = new bool [5];
     public bool [] isStroke = new bool[2];
 
     public Judge mJudge;
@@ -41,15 +41,15 @@ public class Inputmanager : MonoBehaviour
         }
 
         if(Input.GetKey(KeyCode.Keypad7)){
-            isStroke[0]=true; 
+            isDown[4] = isStroke[0] = true;
         }else{
-            isStroke[0]=false;
+            isDown[4] = isStroke[0] = false;
         }
 
         if(Input.GetKey(KeyCode.Keypad8)){
-            isStroke[1]=true;
+            isDown[4] = isStroke[1]=true;
         }else{
-            isStroke[1] = false;
+            isDown[4] = isStroke[1] = false;
         }
     
         if(Input.GetKeyDown(KeyCode.Keypad7) || Input.GetKeyDown(KeyCode.Keypad8)){

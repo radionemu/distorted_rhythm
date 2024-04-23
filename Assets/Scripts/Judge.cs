@@ -7,6 +7,12 @@ using UnityEngine.SocialPlatforms;
 public enum JudgeType{
     PGREAT,
     GREAT,
+    GOOD,
+    OK,
+    MISS,
+    COK,
+    CGOOD,
+    UNJUDGE,
 }
 
 public enum JudgeTiming{
@@ -18,10 +24,14 @@ public enum JudgeTiming{
 public class Judge : MonoBehaviour
 {
     public NoteManager mNoteMgr;
+    public ScoreManager mScoreMgr;
 
     //Judge Timing
-    public float PGREAT = 33.34f;
-    public float GREAT = 66.68f;
+    public float PGREAT = 33f;
+    public float GREAT = 57f;
+    public float GOOD = 81f;
+    public float OK = 105f;
+    public float MISS = 129f;
 
     //ref Class
     public Sync mAudio;
@@ -39,18 +49,24 @@ public class Judge : MonoBehaviour
 
     private int PGREATPCM;
     private int GREATPCM;
+    private int GOODPCM;
+    private int OKPCM;
+    private int MISSPCM;
 
     private bool isCharge = false;
     private bool [] charge = new bool[4]{false, false, false, false};
+
+    public JudgeType tmpJudge;
+    public JudgeTiming tmptiming;
 
     // Start is called before the first frame update
     void Start()
     {   
         PGREATPCM = (int)(PGREAT * mAudio.music.clip.frequency/1000f);
         GREATPCM = (int)(GREAT * mAudio.music.clip.frequency/1000f);
-        Debug.Log(mAudio.music.clip.frequency);
-        Debug.Log(PGREATPCM);
-        Debug.Log(GREATPCM);
+        GOODPCM = (int)(GOOD * mAudio.music.clip.frequency/1000f);
+        OKPCM = (int)(OK * mAudio.music.clip.frequency/1000f);
+        MISSPCM = (int)(MISS * mAudio.music.clip.frequency/1000f);
 
         //InitQueue();
     }
@@ -71,23 +87,29 @@ public class Judge : MonoBehaviour
         Lanes.Add(laneB);
         Lanes.Add(laneC);
         Lanes.Add(laneD);
+        Lanes.Add(laneM);
     }
  
     // Update is called once per frame
     void Update()
     {
-        StartCoroutine(JudgePoor());
+        StartCoroutine(JudgeMiss());
     }
 
-    IEnumerator JudgePoor(){
+    IEnumerator JudgeMiss(){
         int sample = mAudio.music.timeSamples;
         // Debug.Log("sample : "+sample);
         foreach(Queue<Note> lane in Lanes){
             if(lane.Count <= 0) continue;
             Note note = lane.Peek();
             // Debug.Log(""+GetPCM(note));
-            if(note.nType == NoteType.CE && GetPCM(note) < sample){
+            int qsample = sample - (int)GetPCM(note) - (int)mAudio.offsetPCM;
+            if(note.nType == NoteType.CE && qsample>=0){
                 ReqCharge();
+            }else if(qsample>OKPCM){
+                mUIMan.ReqJudge(JudgeType.MISS);
+                lane.Dequeue();
+                mNoteMgr.ReqDestroy(note.objID);
             }
         }
 
@@ -98,11 +120,15 @@ public class Judge : MonoBehaviour
         return mAudio.oneBeatTime * mAudio.music.clip.frequency * (note.section*4*(mSheet.beatNom/mSheet.beatDenom) + 4*(((float)note.nom)/note.denom));
     }
 
+    private bool InRange(int timing, int pmRange){
+        return timing < pmRange && timing > -pmRange;
+    }
+
     public void reqJudge(bool [] inputButtons){
         int cSample = mAudio.music.timeSamples;
         //get Notes in Current Row
         
-        bool [] reqButtons = new bool[4] {false, false, false, false};
+        bool [] reqButtons = new bool[5] {false, false, false, false, false};//BT-A, BT-B, BT-C, BT-D, STROKE
         int timing = int.MaxValue;
         int rowPCM = int.MaxValue;
         foreach(Queue<Note> lane in Lanes){
@@ -140,41 +166,53 @@ public class Judge : MonoBehaviour
                 }
             }
         }
-        if(!isCorrect){
-            Debug.Log("WRONG BUTTON");
-            return;
-        }
 
         int jSample = cSample-rowPCM - (int)mAudio.offsetPCM;
         float jMilli = (float)jSample/mAudio.music.clip.frequency;
-        string str = "";
-        Debug.Log(jSample);
-        if(jSample < PGREATPCM && jSample > -PGREATPCM){
-            str += "PGREAT";
-            mUIMan.reqJudge(JudgeType.PGREAT);
+
+
+        if(InRange(jSample, PGREATPCM)){
+            tmpJudge = JudgeType.PGREAT;
         }
-        else if(jSample < GREATPCM && jSample > -GREATPCM){
-            str += "GREAT";
-            mUIMan.reqJudge(JudgeType.GREAT);
+        else if(InRange(jSample, GREATPCM)){
+            tmpJudge = JudgeType.GREAT;
+        }else if(InRange(jSample, GOODPCM)){
+            tmpJudge = JudgeType.GOOD;
+        }else if(InRange(jSample, OKPCM)){
+            tmpJudge = JudgeType.OK;
+        }else if(InRange(jSample, MISSPCM)){
+            tmpJudge = JudgeType.MISS;
+        }else if(jSample < -MISSPCM){
+            tmpJudge = JudgeType.UNJUDGE;
         }
+
         if(jMilli>0.001f){
-            str += " SLOW -"+(int)(jMilli*1000f);
-            mUIMan.reqFastSlow(JudgeTiming.SLOW, jMilli);
+            tmptiming = JudgeTiming.SLOW;
         }else if (jMilli<-0.001f){
-            str += " FAST +"+(int)(-jMilli*1000f);
-            mUIMan.reqFastSlow(JudgeTiming.FAST, jMilli);
+            tmptiming = JudgeTiming.FAST;
         }else{
-            str += " JUST ";
+            tmptiming = JudgeTiming.JUST;
         }
-        Debug.Log(str);
+
+        if(!isCorrect){
+            Debug.Log("WRONG BUTTON");
+            tmpJudge = JudgeType.MISS;
+        }
+
 
         //After Judge
         foreach(Note note in Row){
+            if(tmpJudge == JudgeType.UNJUDGE) continue;
+            mScoreMgr.ReqJudge2Score(tmpJudge, tmptiming);
+            if(tmptiming == JudgeTiming.FAST && tmpJudge == JudgeType.MISS){
+                continue;
+            }
             if(note.nType==NoteType.CS){
                 int ind = note.lane-1;
                 charge[ind] = true;
                 isCharge = true;
                 Lanes[ind].Dequeue();
+                mNoteMgr.ReqChargeAdjust(note.objID);
             }else{
                 int ind = note.lane-1;
                 Lanes[ind].Dequeue();
@@ -182,6 +220,9 @@ public class Judge : MonoBehaviour
                 mNoteMgr.ReqDestroy(note.objID);
             }
         }
+        //Request to UI Manager
+        mUIMan.ReqJudge(tmpJudge);
+        mUIMan.ReqFastSlow(tmptiming, jMilli);
     }
 
     public void ReqCharge(){
@@ -207,12 +248,19 @@ public class Judge : MonoBehaviour
         }
         int jSample = cSample-rowPCM - (int)mAudio.offsetPCM;
         float jMilli = (float)jSample/mAudio.music.clip.frequency;
-        string str = "";
-        Debug.Log(jSample);
         if(jSample < GREATPCM && jSample > -GREATPCM){
-            str += "OK!";
+            tmpJudge = JudgeType.COK;
+        }else{
+            tmpJudge = JudgeType.CGOOD;
         }
-        Debug.Log(str);
+        if(jMilli>0.001f){
+            tmptiming = JudgeTiming.SLOW;
+        }else if (jMilli<-0.001f){
+            tmptiming = JudgeTiming.FAST;
+        }else{
+            tmptiming = JudgeTiming.JUST;
+        }
+
 
         //After Judge
         foreach(Note note in Row){
@@ -222,7 +270,11 @@ public class Judge : MonoBehaviour
                 isCharge = false;
                 Lanes[ind].Dequeue();
                 mNoteMgr.ReqDestroy(note.objID);
+                mScoreMgr.ReqJudge2Score(tmpJudge, tmptiming);
+                //UI req OK?
             }
         }
+        mUIMan.ReqJudge(tmpJudge);
+        mUIMan.ReqFastSlow(tmptiming, jMilli);
     }
 }

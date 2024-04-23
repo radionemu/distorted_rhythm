@@ -1,20 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class NoteObj : MonoBehaviour
 {
+    public Note note;
+    public Note CENote;
+
     public Sync _sync;
-
-
     public float _spdAmplifier = 1.0f;
     float _noteSpeed;
     bool ismove = true;
     float timer;
+    
+    //Coroutine Running Check
+    public bool IENoteScaleRunning = false;
+    public bool IENoteScrollRunning = true;
 
     // Start is called before the first frame update
     void Start()
     {
+        StartCoroutine(NoteScroll());
     }
 
     // Update is called once per frame
@@ -23,13 +30,34 @@ public class NoteObj : MonoBehaviour
         HiSpeed();
         _noteSpeed = _sync.HiSpeed * (_sync.musicBPM/60.0f);
         timer += Time.smoothDeltaTime;
-        StartCoroutine(NoteScroll());
+        
         
     }
 
-    IEnumerator NoteScroll(){
-        transform.Translate(new Vector3(0, -_noteSpeed*Time.smoothDeltaTime));
-        yield return null;
+    public void Move(){
+        StartCoroutine(NoteScroll());
+    }
+
+    public void reqChargeScale(Transform JudgeLine){
+        StartCoroutine(NoteScale(JudgeLine));
+    }
+
+    public IEnumerator NoteScroll(){
+        IENoteScrollRunning = true;
+        while(true){
+            transform.Translate(new Vector3(0, -_noteSpeed*Time.smoothDeltaTime));
+            yield return null;
+        }
+
+    }
+
+    public IEnumerator NoteScale(Transform JudgeLine){
+        IENoteScaleRunning = true;
+        while(true){
+            yield return null;
+            transform.position = new Vector3(transform.position.x, JudgeLine.position.y);
+            transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y-_noteSpeed*Time.smoothDeltaTime, transform.localScale.z);
+        }
     }
 
     public void HiSpeed(){
