@@ -10,6 +10,7 @@ public class UISwapper : MonoBehaviour
     public GameObject Title;
 
     public Play mPlay;
+    public RankManager mRankMan;
 
     // Start is called before the first frame update
     void Start()
@@ -36,6 +37,7 @@ public class UISwapper : MonoBehaviour
     public void OnReturnClick(){
         StartCoroutine(UpdateScoreDB());
         SwapCanvas(Result, Title);
+        mRankMan.CallViewRank();
     }
 
     IEnumerator UpdateScoreDB(){
