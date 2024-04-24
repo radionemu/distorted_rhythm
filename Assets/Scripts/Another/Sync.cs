@@ -51,11 +51,14 @@ public class Sync : MonoBehaviour
         barPerSec = oneBeatTime * 4.0f;
         barPerSample = barPerSec * music.clip.frequency;   
 
-        music.Play();  
     }
 
     void Update() {
         StartCoroutine(PlayTik());    
+    }
+
+    public void PlayMusic(){
+        music.Play();
     }
 
     IEnumerator PlayTik()

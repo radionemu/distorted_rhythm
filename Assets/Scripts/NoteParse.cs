@@ -32,8 +32,6 @@ public class NoteParse : MonoBehaviour
         mJudge = GameObject.Find("JudgeManager").GetComponent<Judge>();
         mSheet = GameObject.Find("Sheet").GetComponent<Sheet>();
         txtFile = Resources.Load("File 1") as TextAsset;
-        stringReader = new StringReader(txtFile.text);
-        ReadFile();
     }
 
     // Update is called once per frame
@@ -42,9 +40,11 @@ public class NoteParse : MonoBehaviour
         
     }
 
-    void ReadFile(){
+    public bool ReadFile(){
+        mSheet.Notes.Clear();
         int i = 0;
         int PCM = 0;
+        stringReader = new StringReader(txtFile.text);
         while(true){
             i++;
             line = stringReader.ReadLine();
@@ -125,7 +125,7 @@ public class NoteParse : MonoBehaviour
                 break; //break the loop
             }
         }
-
+        return true;
         //test code
         // mJudge.InitQueue();
     }

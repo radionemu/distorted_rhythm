@@ -28,4 +28,9 @@ public class Sheet : MonoBehaviour
     bool isStringEpsilon(string str){
         return str.Length == 0;
     }
+
+    public bool init(){
+        Notes = new();
+        return true;
+    }
 }

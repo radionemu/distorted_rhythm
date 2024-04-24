@@ -49,6 +49,16 @@ public class ScoreManager : MonoBehaviour
         TotalCESize = ce;
         TotalMTSize = mt;
         TotalCNSize = cs + ce;
+        TotalPGREAT = 0;
+        TotalGREAT = 0;
+        TotalGOOD = 0;
+        TotalOK = 0;
+        TotalMISS = 0;
+        indFast = 0;
+        indSlow = 0;
+        Combo = 0;
+        CB = 0;
+        TotalScore = 0;
     }
 
     // TotalScore
@@ -69,9 +79,9 @@ public class ScoreManager : MonoBehaviour
             Combo++;
         }
 
-        if(jTiming == JudgeTiming.FAST && (jtype != JudgeType.PGREAT || jtype != JudgeType.COK)){
+        if(jTiming == JudgeTiming.FAST && jtype != JudgeType.PGREAT && jtype != JudgeType.COK){
             indFast++;
-        }if(jTiming == JudgeTiming.SLOW && (jtype != JudgeType.PGREAT || jtype != JudgeType.COK)){
+        }if(jTiming == JudgeTiming.SLOW && jtype != JudgeType.PGREAT && jtype != JudgeType.COK){
             indSlow++;
         }
 
@@ -82,6 +92,10 @@ public class ScoreManager : MonoBehaviour
 
     public bool isFC(){
         return CB == 0;
+    }
+
+    public uint GetTotalInput(){
+        return TotalPGREAT + TotalGREAT + TotalGOOD + TotalOK + TotalMISS;
     }
 
 }

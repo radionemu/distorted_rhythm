@@ -9,6 +9,7 @@ public class NoteObj : MonoBehaviour
     public Note CENote;
 
     public Sync _sync;
+    public Play mPlay;
     public float _spdAmplifier = 1.0f;
     float _noteSpeed;
     bool ismove = true;
@@ -21,6 +22,9 @@ public class NoteObj : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        IENoteScaleRunning = false;
+        IENoteScrollRunning = false;
+        mPlay = GameObject.Find("PlayManager").GetComponent<Play>();
         StartCoroutine(NoteScroll());
     }
 
@@ -30,8 +34,6 @@ public class NoteObj : MonoBehaviour
         HiSpeed();
         _noteSpeed = _sync.HiSpeed * (_sync.musicBPM/60.0f);
         timer += Time.smoothDeltaTime;
-        
-        
     }
 
     public void Move(){
@@ -45,9 +47,12 @@ public class NoteObj : MonoBehaviour
     public IEnumerator NoteScroll(){
         IENoteScrollRunning = true;
         while(true){
-            transform.Translate(new Vector3(0, -_noteSpeed*Time.smoothDeltaTime));
+            if(mPlay.isPlay == true){
+                transform.Translate(new Vector3(0, -_noteSpeed*Time.smoothDeltaTime));
+            }   
             yield return null;
         }
+
     }
 
     public IEnumerator NoteScale(Transform JudgeLine){

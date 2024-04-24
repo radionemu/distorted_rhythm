@@ -62,7 +62,7 @@ public class Judge : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {   
+    {  
         PGREATPCM = (int)(PGREAT * mAudio.music.clip.frequency/1000f);
         GREATPCM = (int)(GREAT * mAudio.music.clip.frequency/1000f);
         GOODPCM = (int)(GOOD * mAudio.music.clip.frequency/1000f);
@@ -72,7 +72,15 @@ public class Judge : MonoBehaviour
         //InitQueue();
     }
 
-    public void InitQueue(){
+    public bool InitQueue(){
+        Lanes.Clear();
+        laneA.Clear();
+        laneB.Clear();
+        laneC.Clear();
+        laneD.Clear();
+        laneM.Clear();
+        Row.Clear();
+
         //Enqueue Notes each lane
         foreach(Note note in mNoteMgr.JudgeNote){
             switch (note.lane){
@@ -81,7 +89,7 @@ public class Judge : MonoBehaviour
                 case 3:laneC.Enqueue(note);break;
                 case 4:laneD.Enqueue(note);break;
                 case 5:laneM.Enqueue(note);break;
-                default:break;
+                default: return false;
             }
         }
         Lanes.Add(laneA);
@@ -89,6 +97,8 @@ public class Judge : MonoBehaviour
         Lanes.Add(laneC);
         Lanes.Add(laneD);
         Lanes.Add(laneM);
+
+        return true;
     }
  
     // Update is called once per frame

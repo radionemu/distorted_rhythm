@@ -30,8 +30,8 @@ public class NoteManager : MonoBehaviour
     void Start()
     {
         //temp
-        GenerateNote();
-        mJudge.InitQueue();
+        // GenerateNote();
+        // mJudge.InitQueue();
     }
 
     // Update is called once per frame
@@ -40,8 +40,13 @@ public class NoteManager : MonoBehaviour
 
     }
 
-    void GenerateNote(){
-        uint NM=0, CS =0, CE =0, MT = 0;
+    public bool GenerateNote(){
+        Notes = new();
+        JudgeNote = new();
+        uint NM=0;
+        uint CS=0;
+        uint CE=0;
+        uint MT=0;
         float fLaneX = JudgeLine.position.x-JudgeLine.transform.lossyScale.x/2+NotePrefab.transform.lossyScale.x/2;
         GameObject tmp = null;
         Note tmpNote = new();
@@ -72,8 +77,12 @@ public class NoteManager : MonoBehaviour
             JudgeNote.Add(note);
         }
         mScoreMan.SetNoteInfo(NM, CS, CE, MT);
+        return true;
     }
 
+    public List<Note> getJudgeNote(){
+        return JudgeNote;
+    }
     public void ReqChargeAdjust(int id){
         if(Notes.ContainsKey(id)){
             GameObject obj = Notes[id].gameObject;

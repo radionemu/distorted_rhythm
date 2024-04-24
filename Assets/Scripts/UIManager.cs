@@ -51,6 +51,13 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public bool Init(){
+        Judge.text = "";
+        Combo.text = "";
+        Fastslow.text ="";
+        return true;
+    }
+
     public void ReqJudge(JudgeType pJudge){
         Judge.text = pJudge switch
         {
@@ -61,7 +68,7 @@ public class UIManager : MonoBehaviour
             JudgeType.MISS => "MISS",
             JudgeType.COK => "FULL CHARGE",
             JudgeType.CGOOD => "HALF CHARGE",
-            JudgeType.UNJUDGE => "+MISS",
+            JudgeType.UNJUDGE => "",
             _ => "INVALID"
         };
     }
