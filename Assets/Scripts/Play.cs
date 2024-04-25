@@ -21,7 +21,7 @@ public class Play : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log(mSync.music.clip.length);
+        // Debug.Log(mSync.music.clip.length);
     }
 
     // Update is called once per frame

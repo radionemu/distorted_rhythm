@@ -34,7 +34,7 @@ public class RankManager : MonoBehaviour
         WWW www = new WWW("http://localhost/sqlconnect/rank.php");
         yield return www;
         if(www.text[0]=='0'){
-            Debug.Log(www.text);
+            // Debug.Log(www.text);
             string [] str = www.text.Split('\t')[1..];
             foreach (string rankrow in str){
                 GameObject tmp = Instantiate(CellPrefabs,CellList.transform);

@@ -8,7 +8,6 @@ public class NetworkTest : MonoBehaviour
     
     IEnumerator UnityWebRequestGet(){
         string url = "";
-
         yield return null;
     }
 }
