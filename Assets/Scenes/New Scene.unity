@@ -5574,7 +5574,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b774337f4948a342aaf4b2f74d75059, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HiSpeed: 30
+  HiSpeed: 15
   musicBPM: 190
   stdBPM: 60
   playTik: {fileID: 975760988}
@@ -5586,8 +5586,8 @@ MonoBehaviour:
   bitPerSample: 0
   barPerSec: 0
   barPerSample: 0
-  offset: 0.045
-  offsetPCM: 44100
+  offset: 0
+  offsetPCM: 0
 --- !u!4 &975760987
 Transform:
   m_ObjectHideFlags: 0
@@ -5615,7 +5615,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 860ab1ab7c84ed74d8f0665872722eec, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0
+  m_Volume: 0.289
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -5900,7 +5900,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 84f773285d94e8a468e929838e03b76a, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.552
+  m_Volume: 0
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -6149,7 +6149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf71248adfb0baa4ba1edb410795259a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NoteOffset: 0.3
+  NoteOffset: -0.045
   mJudge: {fileID: 58253759}
   mScoreMan: {fileID: 411240869}
   NotePrefab: {fileID: 8574030220544157880, guid: a23c9d1e034fdd54ebe605998ef91b0d, type: 3}
