@@ -5586,7 +5586,7 @@ MonoBehaviour:
   bitPerSample: 0
   barPerSec: 0
   barPerSample: 0
-  offset: 0
+  offset: 0.045
   offsetPCM: 0
 --- !u!4 &975760987
 Transform:

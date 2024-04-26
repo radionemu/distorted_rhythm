@@ -71,7 +71,7 @@ public class Sync : MonoBehaviour
         //offset
         offsetPCM = frequency * offset;
         oneBeatTime = stdBPM / musicBPM * (beatnom / beatdenom);//delta sec for one beat
-        nextSample += offsetPCM; // next sample
+        nextSample += 0; // next sample
         bitPerSec = stdBPM / (8 * musicBPM);
         bitPerSample = bitPerSec * music.clip.frequency;
         barPerSec = oneBeatTime * 4.0f;
