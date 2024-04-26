@@ -26,9 +26,9 @@ public class MainMenu : MonoBehaviour
         WWWForm form = new WWWForm();
         form.AddField("username", NameField.text);
         form.AddField("password", passwordField.text);
-        WWW www = new WWW("http://localhost/sqlconnect/register.php", form);
+        WWW www = new WWW("http://localhost:8080/demo/register", form);
         yield return www;
-        if(www.text == "0"){
+        if(www.text[0] == '0'){
             //work!
             Debug.Log("User created successfully");
         }else{
@@ -40,13 +40,14 @@ public class MainMenu : MonoBehaviour
         WWWForm form = new WWWForm();
         form.AddField("username",NameField.text);
         form.AddField("password",passwordField.text);
-        WWW www = new WWW("http://localhost/sqlconnect/login.php", form);
+        WWW www = new WWW("http://localhost:8080/demo/login", form);
         yield return www;
         if(www.text[0] == '0'){
             Debug.Log("Login Successfully");
 
             DBManager.username = NameField.text;
             DBManager.score = int.Parse(www.text.Split('\t')[1]);
+            Debug.Log(DBManager.score);
             GamePlayButton.interactable = true;
         }else{
             Debug.Log("TASK FAILED SUCCESSFULLY. Error #"+www.text);

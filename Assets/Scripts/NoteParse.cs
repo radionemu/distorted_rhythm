@@ -31,7 +31,7 @@ public class NoteParse : MonoBehaviour
     {
         mJudge = GameObject.Find("JudgeManager").GetComponent<Judge>();
         mSheet = GameObject.Find("Sheet").GetComponent<Sheet>();
-        txtFile = Resources.Load("File 1") as TextAsset;
+        txtFile = Resources.Load("File 2") as TextAsset;
     }
 
     // Update is called once per frame
@@ -128,5 +128,9 @@ public class NoteParse : MonoBehaviour
         return true;
         //test code
         // mJudge.InitQueue();
+    }
+
+    public Sheet GetSheet(){
+        return mSheet;
     }
 }

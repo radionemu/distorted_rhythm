@@ -31,7 +31,7 @@ public class RankManager : MonoBehaviour
             Destroy(obj);
         }
         Lists.Clear();
-        WWW www = new WWW("http://localhost/sqlconnect/rank.php");
+        WWW www = new WWW("http://localhost:8080/demo/rank");
         yield return www;
         if(www.text[0]=='0'){
             // Debug.Log(www.text);

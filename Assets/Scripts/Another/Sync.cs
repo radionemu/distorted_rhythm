@@ -39,18 +39,45 @@ public class Sync : MonoBehaviour
     void Start()
     {
         //component
+        // playTik = GetComponent<AudioSource>();
+        // music = GameObject.Find("Audio Source").GetComponent<AudioSource>();
+
+        // frequency = music.clip.frequency;//Integer
+        // offsetPCM = frequency * offset;
+        // oneBeatTime = stdBPM / musicBPM * (beatnom / beatdenom);//delta sec for one beat
+        // nextSample += offsetPCM; // next sample
+        // bitPerSec = stdBPM / (8 * musicBPM);
+        // bitPerSample = bitPerSec * music.clip.frequency;
+        // barPerSec = oneBeatTime * 4.0f;
+        // barPerSample = barPerSec * music.clip.frequency;   
+
+    }
+
+    public bool init(Sheet mSheet){
+        
+        //component
         playTik = GetComponent<AudioSource>();
         music = GameObject.Find("Audio Source").GetComponent<AudioSource>();
 
+        //load resource
+        music.clip = Resources.Load("Music/"+mSheet.FileName) as AudioClip;
+        musicBPM = mSheet.BPM;
+        stdBPM = 60f;
+        beatnom = mSheet.beatNom;
+        beatdenom = mSheet.beatDenom;
+
+        //music Frequency
         frequency = music.clip.frequency;//Integer
-        // offsetPCM = frequency * offset;
+        //offset
+        offsetPCM = frequency * offset;
         oneBeatTime = stdBPM / musicBPM * (beatnom / beatdenom);//delta sec for one beat
-        // nextSample += offsetPCM; // next sample
+        nextSample += offsetPCM; // next sample
         bitPerSec = stdBPM / (8 * musicBPM);
         bitPerSample = bitPerSec * music.clip.frequency;
         barPerSec = oneBeatTime * 4.0f;
-        barPerSample = barPerSec * music.clip.frequency;   
+        barPerSample = barPerSec * music.clip.frequency;
 
+        return true;
     }
 
     void Update() {

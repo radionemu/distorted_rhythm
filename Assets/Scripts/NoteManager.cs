@@ -9,10 +9,6 @@ using UnityEngine.UIElements;
 public class NoteManager : MonoBehaviour
 {
     public float NoteOffset = -0.1f; //sec
-
-    public Sync _sync;
-
-    public Sheet mSheet;
     public Judge mJudge;
     public ScoreManager mScoreMan;
 
@@ -40,7 +36,7 @@ public class NoteManager : MonoBehaviour
 
     }
 
-    public bool GenerateNote(){
+    public bool GenerateNote(Sync mSync, Sheet mSheet){
         Notes = new();
         JudgeNote = new();
         uint NM=0;
@@ -52,24 +48,31 @@ public class NoteManager : MonoBehaviour
         Note tmpNote = new();
         foreach(Note note in mSheet.Notes){
             if(note.nType == NoteType.NM){
-                tmp = Instantiate(NotePrefab, new Vector3(fLaneX+(note.lane-1)*NotePrefab.transform.localScale.x, JudgeLine.position.y+_sync.HiSpeed*(note.section*4*(mSheet.beatNom/mSheet.beatDenom) + 4*(((float)note.nom)/note.denom)+ NoteOffset)), Quaternion.identity);   
+                tmp = Instantiate(NotePrefab, new Vector3(
+                                        fLaneX+(note.lane-1)*NotePrefab.transform.localScale.x,
+                                        JudgeLine.position.y+mSync.HiSpeed*mSync.oneBeatTime*(4*(mSheet.beatNom/mSheet.beatDenom)*(note.section+((float)note.nom)/note.denom))+ NoteOffset)
+                                , Quaternion.identity);   
+                //obj config
+                NoteObj obj = tmp.GetComponent<NoteObj>();
+                obj.JudgelinePosition = JudgeLine.position;
+                obj.Init(mSync, mSheet, note);
                 Notes.Add(tmp.GetInstanceID(),tmp.GetComponent<NoteObj>());
                 NM++;
             }
             if(note.nType == NoteType.CS){
                 tmpNote = note;
-                tmp = Instantiate(CNotePrefab, new Vector3(fLaneX+(note.lane-1)*NotePrefab.transform.localScale.x, JudgeLine.position.y+_sync.HiSpeed*(note.section*4*(mSheet.beatNom/mSheet.beatDenom) + 4*(((float)note.nom)/note.denom) + NoteOffset)), Quaternion.identity);
+                tmp = Instantiate(CNotePrefab, new Vector3(fLaneX+(note.lane-1)*NotePrefab.transform.localScale.x, JudgeLine.position.y+mSync.HiSpeed*(note.section*4*(mSheet.beatNom/mSheet.beatDenom) + 4*(((float)note.nom)/note.denom) + NoteOffset)), Quaternion.identity);
                 CS++;
             }
             if(note.nType == NoteType.CE){
                 float delta = (note.section*4*(mSheet.beatNom/mSheet.beatDenom) + 4*(((float)note.nom)/note.denom)) - (tmpNote.section*4*(mSheet.beatNom/mSheet.beatDenom)+4*(((float)tmpNote.nom)/tmpNote.denom));
                 // Debug.Log(delta);
-                tmp.transform.localScale = new Vector3(CNotePrefab.transform.localScale.x, CNotePrefab.transform.localScale.y*_sync.HiSpeed*delta, CNotePrefab.transform.localScale.z);
+                tmp.transform.localScale = new Vector3(CNotePrefab.transform.localScale.x, CNotePrefab.transform.localScale.y*mSync.HiSpeed*delta, CNotePrefab.transform.localScale.z);
                 Notes.Add(tmp.GetInstanceID(),tmp.GetComponent<NoteObj>());
                 CE++;
             }
             if(note.nType == NoteType.MT){
-                tmp = Instantiate(MNotePrefab, new Vector3(JudgeLine.position.x, JudgeLine.position.y+_sync.HiSpeed*(note.section*4*(mSheet.beatNom/mSheet.beatDenom) + 4*(((float)note.nom)/note.denom) + NoteOffset)), Quaternion.identity);   
+                tmp = Instantiate(MNotePrefab, new Vector3(JudgeLine.position.x, JudgeLine.position.y+mSync.HiSpeed*(note.section*4*(mSheet.beatNom/mSheet.beatDenom) + 4*(((float)note.nom)/note.denom) + NoteOffset)), Quaternion.identity);   
                 Notes.Add(tmp.GetInstanceID(),tmp.GetComponent<NoteObj>());
                 MT++;
             }

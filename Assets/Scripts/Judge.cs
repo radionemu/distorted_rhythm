@@ -128,7 +128,7 @@ public class Judge : MonoBehaviour
     }
 
     public float GetPCM(Note note){
-        return mAudio.oneBeatTime * mAudio.music.clip.frequency * (note.section*4*(mSheet.beatNom/mSheet.beatDenom) + 4*(((float)note.nom)/note.denom));
+        return mAudio.oneBeatTime * mAudio.music.clip.frequency * (4*(mSheet.beatNom/mSheet.beatDenom)*(note.section+((float)note.nom)/note.denom));
     }
 
     private bool InRange(int timing, int pmRange){
@@ -146,7 +146,7 @@ public class Judge : MonoBehaviour
         foreach(Queue<Note> lane in Lanes){
             if(lane.Count <= 0) continue;
             var note = lane.Peek();
-            int ntiming = (int)(note.section*4*(mSheet.beatNom/mSheet.beatDenom) + 4*(((float)note.nom)/note.denom));
+            int ntiming = (int)(4*(mSheet.beatNom/mSheet.beatDenom)*(note.section+((float)note.nom)/note.denom));
             if(timing > ntiming){
                 rowPCM = (int)GetPCM(note);
                 timing = ntiming;

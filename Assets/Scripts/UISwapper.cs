@@ -45,8 +45,9 @@ public class UISwapper : MonoBehaviour
         WWWForm form = new WWWForm();
         form.AddField("username",DBManager.username);
         form.AddField("score",DBManager.score);
-        WWW www = new WWW("http://localhost/sqlconnect/score.php", form);
+        WWW www = new WWW("http://localhost:8080/demo/score", form);
         yield return www;
+        Debug.Log(www.text);
         if(www.text[0] == '0'){
             string[] txt = www.text.Split('\t');
             Debug.Log("Req Success "+txt[1]);

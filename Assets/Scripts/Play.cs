@@ -5,6 +5,7 @@ using UnityEngine;
 public class Play : MonoBehaviour
 {
     public Sync mSync;
+    public Sheet mSheet;
 
     public UISwapper mUISwap;
 
@@ -48,13 +49,20 @@ public class Play : MonoBehaviour
     public IEnumerator InitGameplay(){
         //Init Parser
         yield return mNoteParser.ReadFile();
-        yield return mNoteManager.GenerateNote();
+
+        //init Sync & audio manager
+        mSheet = mNoteParser.GetSheet();
+        yield return mSync.init(mNoteParser.GetSheet());
+        mSync.PlayMusic();
+
+        //Generate Note
+        yield return mNoteManager.GenerateNote(mSync, mSheet);
+
         yield return mUIMan.Init();
         yield return mJudge.InitQueue();
         // yield return new WaitForSeconds(3f);
         Debug.Log("isPlay");
         isPlay = true;
-        mSync.PlayMusic();
         StartCoroutine(CheckMusicEnd());
         yield return null;
     }
