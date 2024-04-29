@@ -34,7 +34,9 @@ public class Sync : MonoBehaviour
     
     public float offset = 0.000f;
     public float offsetPCM = 7000f;
-
+    public bool isGuidPlaying = true;
+    public float guideTime = 0.000f;
+    public float guidePCM = 0000f;
 
     void Start()
     {
@@ -69,6 +71,7 @@ public class Sync : MonoBehaviour
         //music Frequency
         frequency = music.clip.frequency;//Integer
         //offset
+        offset = mSheet.Offset;
         offsetPCM = frequency * offset;
         oneBeatTime = stdBPM / musicBPM * (beatnom / beatdenom);//delta sec for one beat
         nextSample += 0; // next sample
@@ -81,21 +84,57 @@ public class Sync : MonoBehaviour
     }
 
     void Update() {
-        StartCoroutine(PlayTik());    
     }
 
-    public void PlayMusic(){
+    public void reqPlayMusic(bool guide){
+        music.Stop();
+
+        StopAllCoroutines();
+        StartCoroutine(PlayMusic(guide));
+    }
+
+    public IEnumerator PlayMusic(bool guide){
+        float startTime = Time.time;
+        music.timeSamples = (int)offsetPCM;
+        nextSample = 0;
+        int i = 0;
+        Debug.Log(music.timeSamples);
+        if(guide){
+            isGuidPlaying = true;
+            while(i<5){
+                guideTime = Time.time-startTime; guidePCM = guideTime * frequency;
+                if (guidePCM >= nextSample)
+                {
+                    if(i<4)
+                        playTik.PlayOneShot(tikClip); // 사운드 재생
+                    beatPerSample = oneBeatTime * frequency;
+                    nextSample += beatPerSample;
+                    i++;
+                }
+                yield return null;
+            }
+        }
+        yield return new WaitUntil(()=>i>4);
+        Debug.Log("PLAY!");
         music.Play();
     }
 
-    IEnumerator PlayTik()
+    IEnumerator PlayIntro(int iter)
     {   
-        if (music.timeSamples >= nextSample)
-        {
-            playTik.PlayOneShot(tikClip); // 사운드 재생
-            beatPerSample = oneBeatTime * frequency;
-            nextSample += beatPerSample;
+        int i = 0;
+        while(i>iter){
+            if (music.timeSamples >= nextSample)
+            {
+                playTik.PlayOneShot(tikClip); // 사운드 재생
+                beatPerSample = oneBeatTime * frequency;
+                nextSample += beatPerSample;
+            }
+            yield return null;
         }
-        yield return null;
+        yield return true;
+    }
+
+    public bool IsPlaying(){
+        return isGuidPlaying || music.isPlaying;
     }
 }

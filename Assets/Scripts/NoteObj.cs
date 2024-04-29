@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,7 @@ public class NoteObj : MonoBehaviour
     public Sync mSync;
     public Sheet mSheet;
     public Play mPlay;//?
+    public PlayerSetting mPSetting;
     float mNoteSpd;
     bool ismove = true;
     float timer;
@@ -33,16 +35,25 @@ public class NoteObj : MonoBehaviour
         // StartCoroutine(NoteScroll());
     }
 
-    public void Init(Sync sync, Sheet sheet, Note note){
+    public void Init(Sync sync, Sheet sheet, Note note, List<Color> oColor){
         IENoteScaleRunning = false;
         IENoteScrollRunning = false;
-        mPlay = GameObject.Find("PlayManager").GetComponent<Play>();
+        GameObject obj = GameObject.Find("PlayManager");
+        mPlay = obj.GetComponent<Play>();
+        mPSetting = obj.GetComponent<PlayerSetting>();
         // StartCoroutine(NoteScrollTranslate());
 
         mSync = sync;
         mSheet = sheet;
         this.mNote = note;
         mNoteTiming = mSync.oneBeatTime;
+
+        try{
+            gameObject.GetComponent<SpriteRenderer>().color = oColor[mNote.lane-1];
+        }catch{
+            gameObject.GetComponentInChildren<SpriteRenderer>().color = oColor[mNote.lane-1];
+        }
+
 
     }
 
@@ -60,15 +71,17 @@ public class NoteObj : MonoBehaviour
     private void FixedUpdate() {
         IENoteScrollRunning = true;
         if(mPlay.isPlay == true){
-            float NoteTiming = mSync.oneBeatTime*(4*(mSheet.beatNom/mSheet.beatDenom)*(mNote.section+((float)mNote.nom)/mNote.denom))*mSync.music.clip.frequency;
-            float curTiming = mSync.music.timeSamples;
-            float CurrentTiming = mSync.music.timeSamples;
+            int isGuide = mSheet.DrumIntro ? 1 : 0;
+            float NoteTiming = (mSync.oneBeatTime*(4*(mSheet.beatNom/mSheet.beatDenom)*(isGuide+mNote.section+((float)mNote.nom)/mNote.denom))+mPSetting.DisplayOffset)*mSync.music.clip.frequency;
+            float curTiming = mSync.music.timeSamples+mSync.guidePCM;
 
             float x = transform.position.x;
             float z = transform.position.z;
             float freq = mSync.music.clip.frequency;
             float noteY = JudgelinePosition.y + mSync.HiSpeed * NoteTiming / freq;
-            float judgeY = JudgelinePosition.y;
+            float judgeY = JudgelinePosition.y ;
+
+            // Debug.Log(mPSetting.DisplayOffset+" "+mPSetting.musicStartOffset);
 
             Vector3 noteV3 = new(x,noteY,z);
             Vector3 judgeV3 = new(x,judgeY,z);
@@ -125,8 +138,13 @@ public class NoteObj : MonoBehaviour
         IENoteScaleRunning = true;
         while(true){
             yield return null;
+            int isGuide = mSheet.DrumIntro ? 1 : 0;
             transform.position = new Vector3(transform.position.x, JudgeLine.position.y);
-            transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y-mNoteSpd*Time.smoothDeltaTime, transform.localScale.z);
+            float NoteTiming = (mSync.oneBeatTime*(4*(mSheet.beatNom/mSheet.beatDenom)*(isGuide+CENote.section+((float)CENote.nom)/CENote.denom))+mPSetting.DisplayOffset)*mSync.music.clip.frequency;
+            float curTiming = mSync.music.timeSamples+mSync.guidePCM;
+            float deltaTiming = (NoteTiming - curTiming)/mSync.music.clip.frequency;
+
+            transform.localScale = new Vector3(transform.localScale.x, deltaTiming*mSync.HiSpeed, transform.localScale.z);
         }
     }
 }

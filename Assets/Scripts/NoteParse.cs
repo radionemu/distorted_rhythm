@@ -31,7 +31,7 @@ public class NoteParse : MonoBehaviour
     {
         mJudge = GameObject.Find("JudgeManager").GetComponent<Judge>();
         mSheet = GameObject.Find("Sheet").GetComponent<Sheet>();
-        txtFile = Resources.Load("File 2") as TextAsset;
+        txtFile = Resources.Load("File 1") as TextAsset;
     }
 
     // Update is called once per frame
@@ -89,6 +89,9 @@ public class NoteParse : MonoBehaviour
                         break;
                     case "Offset":
                         mSheet.Offset = float.Parse(token[1]);
+                        break;
+                    case "Introstick":
+                        mSheet.DrumIntro = bool.Parse(token[1]);
                         break;
                     default:
                         break;

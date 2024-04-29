@@ -17,6 +17,8 @@ public class Play : MonoBehaviour
     public Judge mJudge;
     public UIManager mUIMan;
 
+    public PlayerSetting mPsetting;
+
     public bool isPlay = false;
 
     // Start is called before the first frame update
@@ -28,7 +30,13 @@ public class Play : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(isPlay==true&&(!mSync.music.isPlaying || Input.GetKeyDown(KeyCode.Return))){
+        if(Input.GetKeyDown(KeyCode.Slash)){
+            mSync.music.Stop();
+            StopAllCoroutines();
+            StartCoroutine(InitGameplay());
+        }
+
+        if(isPlay==true&&(!mSync.IsPlaying() || Input.GetKeyDown(KeyCode.Return))){
             mSync.music.Stop();
             isPlay = false;
             mResult.UpdateScore();
@@ -38,7 +46,7 @@ public class Play : MonoBehaviour
 
     public IEnumerator CheckMusicEnd(){
         while(true){
-            if(!mSync.music.isPlaying && isPlay == true){
+            if(!mSync.IsPlaying() && isPlay == true){
                 isPlay = false;
                 mUISwap.SwapCanvas(mUISwap.Gameplay, mUISwap.Result);
             }
@@ -47,16 +55,18 @@ public class Play : MonoBehaviour
     }
 
     public IEnumerator InitGameplay(){
+        isPlay = false;
         //Init Parser
         yield return mNoteParser.ReadFile();
 
         //init Sync & audio manager
         mSheet = mNoteParser.GetSheet();
+        mPsetting.musicStartOffset = mSheet.Offset;
         yield return mSync.init(mNoteParser.GetSheet());
-        mSync.PlayMusic();
+        mSync.reqPlayMusic(mSheet.DrumIntro);
 
         //Generate Note
-        yield return mNoteManager.GenerateNote(mSync, mSheet);
+        yield return mNoteManager.GenerateNote(mSync, mSheet, mUIMan.oColor);
 
         yield return mUIMan.Init();
         yield return mJudge.InitQueue();

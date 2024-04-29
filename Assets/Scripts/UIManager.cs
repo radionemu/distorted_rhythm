@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
 {
     public List<SpriteRenderer> LaneButton;
     public List<SpriteRenderer> LaneEffect;
+    public List<SpriteRenderer> LaneLine;
     public List<Color> oColor;
     public List<Color> tColor;
 
@@ -35,11 +36,15 @@ public class UIManager : MonoBehaviour
             if(mIManager.isDown[i]){
                 LaneButton[i].color = oColor[i];
                 LaneEffect[i].enabled = true;
-                LaneEffect[i].color = oColor[i];
+                LaneEffect[i].color = new Color(oColor[i].r, oColor[i].g, oColor[i].b, 0.8f);
+                LaneLine[i].enabled = true;
+                LaneLine[i].color = oColor[i];
             }else{
                 LaneButton[i].color = tColor[i];
                 LaneEffect[i].enabled = false;
                 LaneEffect[i].color = Color.white;
+                LaneLine[i].enabled = false;
+                LaneLine[i].color = Color.white;
             }
         }
         for(int i=0; i<mIManager.isStroke.Count(); i++){

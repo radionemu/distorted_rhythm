@@ -38,6 +38,7 @@ public class Judge : MonoBehaviour
     public Sync mAudio;
     public Sheet mSheet;
     public UIManager mUIMan;
+    public PlayerSetting mPsetting;
 
     List<Queue<Note>> Lanes = new List<Queue<Note>>();
     Queue<Note> laneA = new();
@@ -114,13 +115,16 @@ public class Judge : MonoBehaviour
             if(lane.Count <= 0) continue;
             Note note = lane.Peek();
             // Debug.Log(""+GetPCM(note));
-            int qsample = sample - (int)GetPCM(note) - (int)mAudio.offsetPCM;
+            int qsample = sample - (int)GetPCM(note) - (int)(mAudio.music.clip.frequency * mPsetting.JudgeOffset);
             if(note.nType == NoteType.CE && qsample>=0){
                 ReqCharge();
-            }else if(qsample>OKPCM){
+            }
+            if(qsample>OKPCM){
                 mUIMan.ReqJudge(JudgeType.MISS);
+                if(lane.Peek().nType!=NoteType.CS){
+                    mNoteMgr.ReqDestroy(note.objID);
+                }
                 lane.Dequeue();
-                mNoteMgr.ReqDestroy(note.objID);
             }
         }
 
@@ -146,7 +150,7 @@ public class Judge : MonoBehaviour
         foreach(Queue<Note> lane in Lanes){
             if(lane.Count <= 0) continue;
             var note = lane.Peek();
-            int ntiming = (int)(4*(mSheet.beatNom/mSheet.beatDenom)*(note.section+((float)note.nom)/note.denom));
+            int ntiming = (int)(64*(mSheet.beatNom/mSheet.beatDenom)*(note.section+((float)note.nom)/note.denom));
             if(timing > ntiming){
                 rowPCM = (int)GetPCM(note);
                 timing = ntiming;
@@ -168,20 +172,20 @@ public class Judge : MonoBehaviour
         bool isCorrect = true;
 
         if(Row[0].nType == NoteType.NM || Row[0].nType == NoteType.CS){
-            for(int i=0; i<4; i++){
-                if(reqButtons[i] != inputButtons[i]){
-                    isCorrect = false; break;
-                }
-            }
+            // for(int i=0; i<4; i++){
+            //     if(reqButtons[i] != inputButtons[i]){
+            //         isCorrect = false; break;
+            //     }
+            // }
         }else if(Row[0].nType == NoteType.MT){
-            for(int i=0; i<4; i++){
-                if(inputButtons[i]==true){
-                    isCorrect = false; break;
-                }
-            }
+            // for(int i=0; i<4; i++){
+            //     if(inputButtons[i]==true){
+            //         isCorrect = false; break;
+            //     }
+            // }
         }
 
-        int jSample = cSample-rowPCM - (int)mAudio.offsetPCM;
+        int jSample = cSample-rowPCM - (int)(mAudio.music.clip.frequency * mPsetting.JudgeOffset);
         float jMilli = (float)jSample/mAudio.music.clip.frequency;
 
 
@@ -217,27 +221,31 @@ public class Judge : MonoBehaviour
         //After Judge
         foreach(Note note in Row){
             if(tmpJudge == JudgeType.UNJUDGE) break;
+            if(note.nType == NoteType.CE) break;
             mScoreMgr.ReqJudge2Score(tmpJudge, tmptiming);
             if(tmptiming == JudgeTiming.FAST && tmpJudge == JudgeType.MISS){
                 continue;
             }
-            if(note.nType==NoteType.CS && isCorrect){
-                int ind = note.lane-1;
-                charge[ind] = true;
-                isCharge = true;
-                Lanes[ind].Dequeue();
-                mNoteMgr.ReqChargeAdjust(note.objID);
-            }else if(note.nType==NoteType.NM || note.nType == NoteType.MT || (note.nType == NoteType.CS && !isCorrect)){
+            if(note.nType==NoteType.CS){
                 int ind = note.lane-1;
                 Lanes[ind].Dequeue();
-                // Debug.Log("NOTE : "+ note.lane+" " +note.section+" " + note.nom +" "+note.denom);
-                // Debug.Log("NM Try to Destroy {"+note.objID+"}");
+                if(isCorrect)
+                {
+                    charge[ind] = true;
+                    isCharge = true;
+                    mNoteMgr.ReqChargeAdjust(note.objID);
+                }
+            }else if(note.nType==NoteType.NM || note.nType == NoteType.MT){
+                int ind = note.lane-1;
+                Lanes[ind].Dequeue();
                 mNoteMgr.ReqDestroy(note.objID);
             }
+
+            //Request to UI Manager
+            mUIMan.ReqJudge(tmpJudge);
+            mUIMan.ReqFastSlow(tmptiming, jMilli);
         }
-        //Request to UI Manager
-        mUIMan.ReqJudge(tmpJudge);
-        mUIMan.ReqFastSlow(tmptiming, jMilli);
+
     }
 
     public void ReqCharge(){
@@ -261,7 +269,7 @@ public class Judge : MonoBehaviour
                 Row.Add(note);
             }
         }
-        int jSample = cSample-rowPCM - (int)mAudio.offsetPCM;
+        int jSample = cSample-rowPCM - (int)(mAudio.music.clip.frequency * mPsetting.JudgeOffset);
         float jMilli = (float)jSample/mAudio.music.clip.frequency;
         if(jSample < GREATPCM && jSample > -GREATPCM){
             tmpJudge = JudgeType.COK;

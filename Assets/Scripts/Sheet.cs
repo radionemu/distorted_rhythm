@@ -20,6 +20,8 @@ public class Sheet : MonoBehaviour
     public string Genre {set; get;}
     public int Difficulty   {set; get;}
 
+    public bool DrumIntro {get; set;}
+
     // [NoteInfo]
 
     public List<Note> Notes = new();//init
