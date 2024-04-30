@@ -10,6 +10,7 @@ public class ScoreManager : MonoBehaviour
     public uint TotalScore;
 
     public uint Combo;
+    public uint prevCombo;
     public uint CB;
 
     public List<JudgeType> PaceMaker;
@@ -73,9 +74,11 @@ public class ScoreManager : MonoBehaviour
             case JudgeType.CGOOD : TotalGREAT++; break;
         }
         if(jtype == JudgeType.OK || jtype== JudgeType.MISS){
+            prevCombo = Combo;
             Combo = 0;
             CB++;
-        }else if(jtype == JudgeType.PGREAT || jtype == JudgeType.GREAT || jtype == JudgeType.GOOD){
+        }else{
+            prevCombo = Combo;
             Combo++;
         }
 
@@ -87,7 +90,7 @@ public class ScoreManager : MonoBehaviour
 
         TotalScore = (uint)(1000000 * (TotalPGREAT+ TotalGREAT*0.5f + TotalGOOD*0.2f) / TotalNoteSize);
         mUIMgr.ReqScore(TotalScore);
-        mUIMgr.ReqCombo(Combo);
+        mUIMgr.ReqCombo(Combo, prevCombo);
     }
 
     public bool isFC(){

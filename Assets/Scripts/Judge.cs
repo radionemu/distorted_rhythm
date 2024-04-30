@@ -120,7 +120,8 @@ public class Judge : MonoBehaviour
                 ReqCharge();
             }
             if(qsample>OKPCM){
-                mUIMan.ReqJudge(JudgeType.MISS);
+                mUIMan.ReqJudge(JudgeType.MISS, note.lane);
+                mScoreMgr.ReqJudge2Score(JudgeType.MISS, JudgeTiming.SLOW);
                 if(lane.Peek().nType!=NoteType.CS){
                     mNoteMgr.ReqDestroy(note.objID);
                 }
@@ -242,7 +243,7 @@ public class Judge : MonoBehaviour
             }
 
             //Request to UI Manager
-            mUIMan.ReqJudge(tmpJudge);
+            mUIMan.ReqJudge(tmpJudge, note.lane);
             mUIMan.ReqFastSlow(tmptiming, jMilli);
         }
 
@@ -298,7 +299,7 @@ public class Judge : MonoBehaviour
                 //UI req OK?
             }
         }
-        mUIMan.ReqJudge(tmpJudge);
+        mUIMan.ReqJudge(tmpJudge, -1);
         mUIMan.ReqFastSlow(tmptiming, jMilli);
     }
 }

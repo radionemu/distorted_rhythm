@@ -53,7 +53,7 @@ public class NoteManager : MonoBehaviour
         uint CS=0;
         uint CE=0;
         uint MT=0;
-        float fLaneX = JudgeLine.position.x-JudgeLine.transform.lossyScale.x/2+NotePrefab.transform.lossyScale.x/2;
+        float fLaneX = JudgeLine.position.x-JudgeLine.transform.lossyScale.x*2+NotePrefab.transform.lossyScale.x/2;
         int isGuide = mSheet.DrumIntro ? 1 : 0;
         GameObject tmp = null;
         Note tmpNote = new();
@@ -137,6 +137,7 @@ public class NoteManager : MonoBehaviour
                 nobj.StopCoroutine(nobj.NoteScale(JudgeLine));
             }
             Destroy(obj);
-        } 
+        }
+        Notes.Remove(id);
     }
 }
