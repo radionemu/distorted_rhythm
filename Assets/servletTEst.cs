@@ -21,7 +21,7 @@ public class servletTEst : MonoBehaviour
     }
 
     IEnumerator reqServlet(){
-        WWW www = new WWW("http://localhost:8080/demo/svl");
+        WWW www = new WWW("http://106.246.242.58:11345/demo/svl");
         yield return www;
         if(www.text[0] == '0'){
             Debug.Log(www.text);

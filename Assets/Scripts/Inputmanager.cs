@@ -7,20 +7,30 @@ using UnityEngine.InputSystem;
 public class Inputmanager : MonoBehaviour
 {
     public bool [] isDown = new bool [5];
-    public bool [] isStroke = new bool[2];
+    public bool [] isStroke = {false, false};
+    public bool [] prevStroke = {false, false};
+
+    public Camera PCcam;
+    public Camera MBcam;
+    Camera maincam => _ = settingManager.BuildSetting == settingManager.PortMode.Desktop ? PCcam : MBcam;
 
     public Judge mJudge;
     // Start is called before the first frame update
     Ray ray;
     RaycastHit hit;
 
-    public float threshold = 300f;
+    public float threshold = 600f;
+    public float deltaThreshold = 60f;
     private int touchindex = 0;
     private Vector2 touchBeganPos;
     private Vector2 touchEndPos;
     
     float width;
     float height;
+    float prevDelta = 0.0f;
+    int prevdeltasign = 0;
+
+    float prevTime = 0.0f;
 
     void Start()
     {
@@ -41,7 +51,7 @@ public class Inputmanager : MonoBehaviour
         for(int i=0; i<Input.touchCount; i++){
             if(i>=5) break;
             Touch touch = Input.GetTouch(i);
-            ray = Camera.main.ScreenPointToRay(touch.position);
+            ray = maincam.ScreenPointToRay(touch.position);
             // Debug.DrawRay(ray.origin, ray.direction*100);
             // Debug.Log(ray.origin.x+" "+ray.origin.y+" "+ray.origin.z);
             // Debug.Log(Physics.Raycast(ray));
@@ -69,35 +79,65 @@ public class Inputmanager : MonoBehaviour
             }
 
             if(ray.origin.x<0){
-                    // if(touch.deltaPosition.y < -threshold && isStroke[1]==false){
-                    //     isStroke[0]=false;
-                    //     isStroke[1]=true;
-                    // }
-                    // else if(touch.deltaPosition.y > threshold && isStroke[0]==false){
-                    //     isStroke[0]=true;
-                    //     isStroke[1]=false;
-                    // }else{
-                    //     isStroke[0]=false;
-                    //     isStroke[1]=false;
-                    // }
-                if(touch.phase == UnityEngine.TouchPhase.Began){
-                    touchindex = i;
-                    touchBeganPos = touch.position;
-                }
-                if(touch.phase == UnityEngine.TouchPhase.Ended && touchindex == i){
-                    touchEndPos = touch.position;
-                    Vector2 diff = touchEndPos - touchBeganPos;
-                    if(diff.y < -threshold){
-                        isStroke[0] = false;
-                        isStroke[1] = true;
-                        mJudge.ReqJudge(isDown);
-                    }else if(diff.y > threshold){
-                        isStroke[0] = true;
-                        isStroke[1] = false;
-                        mJudge.ReqJudge(isDown);
+                float curtime = Time.time;
+                    if(touch.deltaPosition.y < -threshold && isStroke[1]==false){
+                        isStroke[0]=false;
+                        isStroke[1]=true;
+                        if(prevdeltasign != Math.Sign(touch.deltaPosition.y) && (curtime - prevTime >= 0.1f)){
+                            mJudge.ReqJudge(isDown);
+                            prevdeltasign = Math.Sign(touch.deltaPosition.y);
+                            Debug.Log(curtime-prevTime);
+                            prevTime = curtime;
+                        }
                     }
-                    // Debug.Log(isStroke[0]+" "+isStroke[1]);
-                };
+                    else if(touch.deltaPosition.y > threshold && isStroke[0]==false){
+                        isStroke[0]=true;
+                        isStroke[1]=false;
+                        if(prevdeltasign != Math.Sign(touch.deltaPosition.y) && (curtime - prevTime >= 0.1f)){
+                            mJudge.ReqJudge(isDown);
+                            prevdeltasign = Math.Sign(touch.deltaPosition.y);
+                            Debug.Log(curtime-prevTime);
+                            prevTime = curtime;
+                        }
+                    }else{
+                        isStroke[0]=false;
+                        isStroke[1]=false;
+                        prevdeltasign = 0;
+                    }
+                    if(touch.phase == UnityEngine.TouchPhase.Ended){
+                        prevTime = 0f;
+                    }
+                // if(touch.phase == UnityEngine.TouchPhase.Began){
+                //     touchindex = i;
+                //     touchBeganPos = touch.position;
+                // }
+                // if(touchindex == i){
+                //     if(prevDelta > deltaThreshold && (Math.Sign(prevDelta) != Math.Sign(prevdeltasign))){
+                //         prevdeltasign = Math.Sign(prevDelta);
+                //         touchBeganPos = touch.position;
+                //     }
+                //     touchEndPos = touch.position;
+                //     Vector2 diff = touchEndPos - touchBeganPos;
+                //     bool check = !(prevStroke[0]==isStroke[0]&&prevStroke[1]==isStroke[1]);
+                //     if(diff.y < -threshold){
+                //         if(prevStroke[1] == false){
+                //             isStroke[0] = false;
+                //             isStroke[1] = true;
+                //             if(check)
+                //                 mJudge.ReqJudge(isDown);
+                //         }
+                //     }else if(diff.y > threshold){
+                //         if(prevStroke[0] == false){
+                //             isStroke[0] = true;
+                //             isStroke[1] = false;
+                //             if(check)
+                //                 mJudge.ReqJudge(isDown);
+                //         }
+                //     }
+                //     prevDelta = touch.deltaPosition.y;
+                //     prevStroke[0] = isStroke[0]; prevStroke[1] = isStroke[1];
+                //    // Debug.Log(isStroke[0]+" "+isStroke[1]);
+                //};
                 // Debug.Log("STROKE");
                 // Debug.Log(touch.deltaPosition.y);
             }

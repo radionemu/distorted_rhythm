@@ -6,7 +6,7 @@ public class Sync : MonoBehaviour
 {
 
     //ambiguous
-    public float HiSpeed;
+    public float HiSpeed => _ = settingManager.BuildSetting == settingManager.PortMode.Desktop ? 15.0f : 5.0f;
 
     public float musicBPM = 150f; //BPM of MUSIC
     public float stdBPM = 60.0f; //one minutes

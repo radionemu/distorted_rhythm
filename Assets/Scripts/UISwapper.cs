@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class UISwapper : MonoBehaviour
 {
-    public GameObject Gameplay;
-    public GameObject Result;
+    public GameObject PCUI;
+    public GameObject MBUI;
 
-    public GameObject Title;
+    public GameObject Gameplay => _ = settingManager.BuildSetting == settingManager.PortMode.Desktop ? PCUI.transform.GetChild(0).gameObject : MBUI.transform.GetChild(0).gameObject;
+    public GameObject Result => _ = settingManager.BuildSetting == settingManager.PortMode.Desktop ? PCUI.transform.GetChild(1).gameObject : MBUI.transform.GetChild(1).gameObject;
+    public GameObject Title => _ = settingManager.BuildSetting == settingManager.PortMode.Desktop ? PCUI.transform.GetChild(2).gameObject : MBUI.transform.GetChild(2).gameObject;
+
+    public GameObject PCcam;
+    public GameObject MBcam;
 
     public Play mPlay;
     public RankManager mRankMan;
@@ -15,7 +20,17 @@ public class UISwapper : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        if(settingManager.BuildSetting == settingManager.PortMode.Desktop){
+            PCUI.SetActive(true);
+            MBUI.SetActive(false);
+            PCcam.SetActive(true);
+            MBcam.SetActive(false);
+        }else{
+            PCUI.SetActive(false);
+            MBUI.SetActive(true);
+            PCcam.SetActive(false);
+            MBcam.SetActive(true);
+        }
     }
 
     // Update is called once per frame
@@ -35,9 +50,15 @@ public class UISwapper : MonoBehaviour
     }
 
     public void OnReturnClick(){
-        StartCoroutine(UpdateScoreDB());
+        StartCoroutine(ReturnTitle());
+    }
+
+    IEnumerator ReturnTitle(){
+        if(DBManager.username != null){
+            yield return StartCoroutine(UpdateScoreDB());
+        }
         SwapCanvas(Result, Title);
-        mRankMan.CallViewRank();
+        yield return mRankMan.CallViewRank();
     }
 
     IEnumerator UpdateScoreDB(){
@@ -45,7 +66,7 @@ public class UISwapper : MonoBehaviour
         WWWForm form = new WWWForm();
         form.AddField("username",DBManager.username);
         form.AddField("score",DBManager.score);
-        WWW www = new WWW("http://localhost:8080/demo/score", form);
+        WWW www = new WWW("http://106.246.242.58:11345/demo/score", form);
         yield return www;
         Debug.Log(www.text);
         if(www.text[0] == '0'){

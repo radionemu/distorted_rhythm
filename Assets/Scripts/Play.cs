@@ -21,18 +21,31 @@ public class Play : MonoBehaviour
 
     public bool isPlay = false;
 
+    private bool sss = true;
+
     // Start is called before the first frame update
     void Start()
     {
+        settingManager.BuildSetting = settingManager.PortMode.Desktop;
+        Application.targetFrameRate = -1;
         // Debug.Log(mSync.music.clip.length);
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        // if(sss){
+        //     mSync.music.Stop();
+        //     StopAllCoroutines();
+        //     Debug.Log("TEST START");
+        //     StartCoroutine(InitGameplay());
+        //     sss = false;
+        // }
         if(Input.GetKeyDown(KeyCode.Slash)){
             mSync.music.Stop();
             StopAllCoroutines();
+            Debug.Log("TEST START");
             StartCoroutine(InitGameplay());
         }
 
@@ -68,7 +81,7 @@ public class Play : MonoBehaviour
         //Generate Note
         yield return mNoteManager.GenerateNote(mSync, mSheet, mUIMan.oColor);
 
-        yield return mUIMan.Init();
+        yield return mUIMan.Init(mSheet);
         yield return mJudge.InitQueue();
         // yield return new WaitForSeconds(3f);
         Debug.Log("isPlay");

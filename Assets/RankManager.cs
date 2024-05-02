@@ -13,7 +13,7 @@ public class RankManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        CallViewRank();
+        // CallViewRank();
     }
 
     // Update is called once per frame
@@ -22,8 +22,9 @@ public class RankManager : MonoBehaviour
         
     }
 
-    public void CallViewRank(){
+    public bool CallViewRank(){
         StartCoroutine(ViewRank());
+        return true;
     }
 
     IEnumerator ViewRank(){
@@ -31,7 +32,7 @@ public class RankManager : MonoBehaviour
             Destroy(obj);
         }
         Lists.Clear();
-        WWW www = new WWW("http://localhost:8080/demo/rank");
+        WWW www = new WWW("http://106.246.242.58:11345/demo/rank");
         yield return www;
         if(www.text[0]=='0'){
             // Debug.Log(www.text);

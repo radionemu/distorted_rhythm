@@ -8,6 +8,16 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    public GameObject PCUI;
+    public GameObject MBUI;
+
+    public GameObject UIS => _ = settingManager.BuildSetting == settingManager.PortMode.Desktop ? PCUI : MBUI;
+
+    //Title Card
+    public TextMeshProUGUI TitleText;
+    public TextMeshProUGUI ArtistText;
+
+    //lane Buttons
     public List<SpriteRenderer> LaneButton;
     public List<SpriteRenderer> LaneEffect;
     public List<SpriteRenderer> LaneLine;
@@ -19,7 +29,6 @@ public class UIManager : MonoBehaviour
     private Inputmanager mIManager;
 
     public TextMeshProUGUI Judge;
-    public TextMeshProUGUI Combo;
     public TextMeshProUGUI Fastslow;
 
     public TextMeshProUGUI Score;
@@ -37,6 +46,17 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         mIManager = GameObject.Find("InputManager").GetComponent<Inputmanager>();   
+
+        Judge = UIS.transform.GetChild(0).GetChild(2).GetComponent<TextMeshProUGUI>();
+        JudgeAnimator = UIS.transform.GetChild(0).GetChild(2).GetComponent<Animator>();
+        Fastslow = UIS.transform.GetChild(0).GetChild(3).GetComponent<TextMeshProUGUI>();
+        JudgeEffect = UIS.transform.GetChild(0).GetChild(1).GetComponent<ParticleSystem>();
+        for(int i=0; i<3; i++)
+            JudgeFXs[i] = UIS.transform.GetChild(0).GetChild(1).GetChild(i).GetComponent<ParticleSystem>();
+        JudgeAnimator = UIS.transform.GetChild(0).GetChild(2).GetComponent<Animator>();
+        for(int i=0; i<4; i++)
+            ComboCounter[i] = UIS.transform.GetChild(0).GetChild(4).GetChild(i).gameObject;
+        ComboCounter[4] = UIS.transform.GetChild(0).GetChild(5).gameObject;
     }
 
     // Update is called once per frame
@@ -66,10 +86,13 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public bool Init(){
+    public bool Init(Sheet msheet){
         Judge.text = "";
-        Combo.text = "";
         Fastslow.text ="";
+        //title card
+        TitleText.text = msheet.Title;
+        ArtistText.text = msheet.Artist;
+
         return true;
     }
 
@@ -201,7 +224,5 @@ public class UIManager : MonoBehaviour
                 animator.Play("ComboCount", -1, 0f);
             }
         }
-
-        Combo.text = combo.ToString();
     }
 }

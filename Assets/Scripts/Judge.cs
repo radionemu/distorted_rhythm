@@ -173,17 +173,17 @@ public class Judge : MonoBehaviour
         bool isCorrect = true;
 
         if(Row[0].nType == NoteType.NM || Row[0].nType == NoteType.CS){
-            // for(int i=0; i<4; i++){
-            //     if(reqButtons[i] != inputButtons[i]){
-            //         isCorrect = false; break;
-            //     }
-            // }
+            for(int i=0; i<4; i++){
+                if(reqButtons[i] != inputButtons[i]){
+                    isCorrect = false; break;
+                }
+            }
         }else if(Row[0].nType == NoteType.MT){
-            // for(int i=0; i<4; i++){
-            //     if(inputButtons[i]==true){
-            //         isCorrect = false; break;
-            //     }
-            // }
+            for(int i=0; i<4; i++){
+                if(inputButtons[i]==true){
+                    isCorrect = false; break;
+                }
+            }
         }
 
         int jSample = cSample-rowPCM - (int)(mAudio.music.clip.frequency * mPsetting.JudgeOffset);
