@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
@@ -21,6 +22,7 @@ public class UIManager : MonoBehaviour
     public List<SpriteRenderer> LaneButton;
     public List<SpriteRenderer> LaneEffect;
     public List<SpriteRenderer> LaneLine;
+    public List<Light2D> BTLight;
     public List<Color> oColor;
     public List<Color> tColor;
 
@@ -69,12 +71,14 @@ public class UIManager : MonoBehaviour
                 LaneEffect[i].color = new Color(oColor[i].r, oColor[i].g, oColor[i].b, 0.8f);
                 LaneLine[i].enabled = true;
                 LaneLine[i].color = oColor[i];
+                BTLight[i].enabled = true;
             }else{
                 LaneButton[i].color = tColor[i];
                 LaneEffect[i].enabled = false;
                 LaneEffect[i].color = Color.white;
                 LaneLine[i].enabled = false;
                 LaneLine[i].color = Color.white;
+                BTLight[i].enabled = false;
             }
         }
         for(int i=0; i<mIManager.isStroke.Count(); i++){
