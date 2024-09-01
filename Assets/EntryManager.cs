@@ -38,6 +38,7 @@ public class EntryManager : MonoBehaviour
     [Header("Entire Section")]
     public GameObject NetTestObj;
     public GameObject LoginObj;
+    public GameObject EntryCanvas;
 
     [Header("Network Test Section")]
     public GameObject NetAnima;
@@ -77,6 +78,7 @@ public class EntryManager : MonoBehaviour
     IEnumerator Entry(){
         yield return StartCoroutine(NetTestProcess());
         yield return StartCoroutine(LoginProcess());
+        HowToPlayManager.GetInstance()?.init();
     }
 
     IEnumerator FadeInOutNetTest(bool inout){
@@ -152,7 +154,7 @@ public class EntryManager : MonoBehaviour
             yield return new WaitUntil(()=>mStatus!=NETStatus.TryToLogReg);
             if(mStatus == NETStatus.Login){
                 //this includes
-                LoginText.text = "로그인에 성공하였습니다!";
+                LoginText.text = "반갑습니다. " + DBManager.username+"님!";
                 ExcptText.text = "";
                 mConExpt = ConExcpt.NoConExcpt;//reset exception
                 yield return new WaitForSeconds(1.5f);
@@ -170,12 +172,13 @@ public class EntryManager : MonoBehaviour
         }
         yield return StartCoroutine(FadeInOutLogin(false));
         LoginObj.SetActive(false);
+        EntryCanvas.SetActive(false);
     }
 
 
     IEnumerator CheckNETStatus(){
         WWWForm form = new WWWForm();
-        WWW www = new WWW("http://106.246.242.58:11345/demo/svl", form);
+        WWW www = new WWW("http://localhost:8080/demo/networkConnection", form);
         yield return www;
         if(www.text.Length <= 0){
             Debug.LogError("Connection Time out");
@@ -193,9 +196,8 @@ public class EntryManager : MonoBehaviour
 
     IEnumerator Register(){
         WWWForm form = new WWWForm();
-        form.AddField("username", NameField.text);
-        form.AddField("password", passwordField.text);
-        WWW www = new WWW("http://106.246.242.58:11345/demo/register", form);
+        form.AddField("player_name", NameField.text);
+        WWW www = new WWW("http://localhost:8080/demo/register", form);
         yield return www;
         if(www.text.Length<=0){
             Debug.LogError("Network Disconnected on Register phase");
@@ -212,9 +214,8 @@ public class EntryManager : MonoBehaviour
 
     IEnumerator Login(){
         WWWForm form = new WWWForm();
-        form.AddField("username",NameField.text);
-        form.AddField("password",passwordField.text);
-        WWW www = new WWW("http://106.246.242.58:11345/demo/login", form);
+        form.AddField("player_name",NameField.text);
+        WWW www = new WWW("http://localhost:8080/demo/register", form);
         yield return www;
         if(www.text.Length <= 0){
             Debug.LogError("Network Disconnected on Login Phase.");
@@ -223,7 +224,7 @@ public class EntryManager : MonoBehaviour
         else if(www.text[0] == '0'){
             Debug.Log("Login Successfully");
             DBManager.username = NameField.text;
-            DBManager.score = int.Parse(www.text.Split('\t')[1]);
+            DBManager.score = 0;
             mStatus = NETStatus.Login;
         }else{
             Debug.LogError("TASK FAILED SUCCESSFULLY. Error #"+www.text);
@@ -233,8 +234,7 @@ public class EntryManager : MonoBehaviour
     }
 
     public void VerifyInputs(){
-        RegisterButton.interactable = (NameField.text.Length >= 8 && passwordField.text.Length >=8);
-        loginButton.interactable = (NameField.text.Length >= 8 && passwordField.text.Length >=8);
+        loginButton.interactable = (NameField.text.Length >= 2 && NameField.text.Length <= 16);
     }
 
 }
