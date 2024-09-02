@@ -214,7 +214,7 @@ public class Judge : MonoBehaviour
         }
 
         if(!isCorrect){
-            Debug.Log("WRONG BUTTON");
+            // Debug.Log("WRONG BUTTON");
             tmpJudge = JudgeType.MISS;
         }
 

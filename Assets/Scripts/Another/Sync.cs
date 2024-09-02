@@ -117,6 +117,7 @@ public class Sync : MonoBehaviour
         yield return new WaitUntil(()=>i>4);
         Debug.Log("PLAY!");
         music.Play();
+        isGuidPlaying = false;
     }
 
     IEnumerator PlayIntro(int iter)

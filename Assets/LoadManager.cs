@@ -46,5 +46,6 @@ public class LoadManager : MonoBehaviour
         LoadingAnimator.SetTrigger("Complete");
         yield return new WaitUntil(() => LoadingAnimator.GetCurrentAnimatorStateInfo(0).IsName("Complete"));
         yield return new WaitWhile(() => LoadingAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1.0f);
+        LoadCanvas.SetActive(false);
     }
 }

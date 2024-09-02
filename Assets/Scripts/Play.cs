@@ -1,6 +1,11 @@
+using System;
+using System.Buffers.Text;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
+using System.Text;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class Play : MonoBehaviour
 {
@@ -49,28 +54,57 @@ public class Play : MonoBehaviour
             StartCoroutine(InitGameplay());
         }
 
-        if(isPlay==true&&(!mSync.IsPlaying() || Input.GetKeyDown(KeyCode.Return))){
+        if(isPlay==true&&mSync.IsPlaying() && Input.GetKeyDown(KeyCode.Return)){
             mSync.music.Stop();
             isPlay = false;
             mResult.UpdateScore();
-            mUISwap.SwapCanvas(mUISwap.Gameplay, mUISwap.Result);
+            StopCoroutine(CheckMusicEnd());
+            StartCoroutine(ResultManager.GetInstance().Load());
+            // mUISwap.SwapCanvas(mUISwap.Gameplay, mUISwap.Result);
         }
     }
 
     public IEnumerator CheckMusicEnd(){
         while(true){
-            if(!mSync.IsPlaying() && isPlay == true){
+            if (!mSync.IsPlaying() && isPlay == true)
+            {
                 isPlay = false;
-                mUISwap.SwapCanvas(mUISwap.Gameplay, mUISwap.Result);
+                mResult.UpdateScore();
+                StartCoroutine(ResultManager.GetInstance().Load());
+                // mUISwap.SwapCanvas(mUISwap.Gameplay, mUISwap.Result);
             }
             yield return new WaitForSeconds(0.1f);
         }
     }
 
+    public void StartGame() { 
+        mSync.music.Stop();
+        StopAllCoroutines();
+        Debug.Log("TEST START");
+        StartCoroutine(InitGameplay());
+    }
+
     public IEnumerator InitGameplay(){
         isPlay = false;
         //Init Parser
-        yield return mNoteParser.ReadFile();
+
+        string text = "";
+
+        WWWForm form = new WWWForm();
+        form.AddField("lv", SelectManager.GetInstance().SelectCursor);
+        UnityWebRequest www = UnityWebRequest.Post("http://localhost:8080/demo/getlevel", form);
+        yield return www.SendWebRequest();
+        if(www.downloadHandler.text.Length<=0){
+            Debug.LogError("Network Disconnected");
+            yield return null;
+        }else{
+            text = www.downloadHandler.text;
+            byte[] bytes = Convert.FromBase64String(text);
+            text = Encoding.UTF8.GetString(bytes);
+        }
+
+        //TODO
+        yield return mNoteParser.ReadFile(text);
 
         //init Sync & audio manager
         mSheet = mNoteParser.GetSheet();
@@ -88,5 +122,47 @@ public class Play : MonoBehaviour
         isPlay = true;
         StartCoroutine(CheckMusicEnd());
         yield return null;
+    }
+
+    public string GetUnicodeString(string input)
+    {
+
+        Encoding encoding = Encoding.GetEncoding(51949);//중국어 간체 
+        var bytest = encoding.GetBytes(input); 
+        var output = encoding.GetString(bytest); 
+        //Console.WriteLine(input); 
+        //Console.WriteLine(output); 
+
+        List<string> unicodes = new List<string>(); 
+
+        string result = String.Empty; 
+
+        if (input != output) 
+        { 
+
+            for (int i = 0; i < input.Length; i += char.IsSurrogatePair(input, i) ? 2 : 1) 
+            { 
+                int codepoint = char.ConvertToUtf32(input, i); 
+                unicodes.Add(String.Format("&#{0}", codepoint)); 
+            } 
+             
+            for (int i = 0; i < input.Length; i++) 
+            { 
+
+                if (input[i].ToString() != output[i].ToString()) 
+                { 
+                    result += unicodes[i]; 
+                } 
+
+                else 
+                { 
+                    result += input[i]; 
+                } 
+            } 
+        } 
+
+        else result = input; 
+
+        return result; 
     }
 }

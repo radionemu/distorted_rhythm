@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
 using System.Linq;
+using System;
 
 public class NoteParse : MonoBehaviour
 {
@@ -40,11 +41,11 @@ public class NoteParse : MonoBehaviour
         
     }
 
-    public bool ReadFile(){
+    public bool ReadFile(String text){
         mSheet.Notes.Clear();
         int i = 0;
         int PCM = 0;
-        stringReader = new StringReader(txtFile.text);
+        stringReader = new StringReader(text);
         while(true){
             i++;
             line = stringReader.ReadLine();

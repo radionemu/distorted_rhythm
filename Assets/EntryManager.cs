@@ -223,6 +223,7 @@ public class EntryManager : MonoBehaviour
         }
         else if(www.text[0] == '0'){
             Debug.Log("Login Successfully");
+            DBManager.userhash = www.text.Split(" ")[1];
             DBManager.username = NameField.text;
             DBManager.score = 0;
             mStatus = NETStatus.Login;
@@ -234,7 +235,7 @@ public class EntryManager : MonoBehaviour
     }
 
     public void VerifyInputs(){
-        loginButton.interactable = (NameField.text.Length >= 2 && NameField.text.Length <= 16);
+        loginButton.interactable = NameField.text.Length >= 2 && NameField.text.Length <= 8;
     }
 
 }
