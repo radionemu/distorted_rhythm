@@ -6,6 +6,7 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 public class ResultManager : MonoBehaviour
 {
@@ -25,6 +26,8 @@ public class ResultManager : MonoBehaviour
     public bool isInteractive = false;
 
     public bool isInteractivetwo = false;
+
+    public Image LV;
 
     void Awake()
     {
@@ -124,14 +127,16 @@ public class ResultManager : MonoBehaviour
             int s = 1;
             for (int i = 0; i < scorelist.Count(); i++) {
                 string[] rns = scorelist[i].Split(' ');
-                GameObject go = Instantiate(rankCellPrefab, VertRank.transform);
+                GameObject go; 
                 if (prevscore >= mScoreMgr.TotalScore && mScoreMgr.TotalScore > int.Parse(rns[2]))
                 {
+                    go = Instantiate(rankCellPrefab, VertRank.transform);
                     go.GetComponent<RankCell>().init((s).ToString(), DBManager.username, mScoreMgr.TotalScore.ToString(), true);
                     pool.Add(go);
                     rrank = s + adder;
                     adder++;
                 }
+                go = Instantiate(rankCellPrefab, VertRank.transform);
                 go.GetComponent<RankCell>().init((s + adder).ToString(), rns[1], rns[2]);
                 pool.Add(go);
                 prevscore = int.Parse(rns[2]);
@@ -144,32 +149,34 @@ public class ResultManager : MonoBehaviour
                 rrank = scorelist.Count + adder;
             }
         }
-
-        if (rrank <= 4)
-        {
-            for (int i = 10; i < pool.Count(); i++)
+        if (pool.Count > 10) { 
+            if (rrank <= 4)
             {
-                pool[i].SetActive(false);
+                for (int i = 10; i < pool.Count(); i++)
+                {
+                    pool[i].SetActive(false);
+                }
+            }
+            else if (4 < rrank && rrank <= pool.Count - 6)
+            {
+                for (int i = 0; i < rrank - 4; i++)
+                {
+                    pool[i].SetActive(false);
+                }
+                for (int i = rrank + 6; i < pool.Count - 1; i++)
+                {
+                    pool[i].SetActive(false);
+                }
+            }
+            else {
+                for (int i = 0; i < pool.Count - 10; i++) {
+                    pool[i].SetActive(false);
+                }
             }
         }
-        else if (4 < rrank && rrank <= pool.Count - 6)
-        {
-            for (int i = 0; i < rrank - 4; i++)
-            {
-                pool[i].SetActive(false);
-            }
-            for (int i = rrank + 6; i < pool.Count - 1; i++)
-            {
-                pool[i].SetActive(false);
-            }
-        }
-        else {
-            for (int i = 0; i < pool.Count - 10; i++) {
-                pool[i].SetActive(false);
-            }
-        }
 
 
+        LV.sprite = StartManager.GetInstance().LV.sprite;
 
         yield return new WaitForSeconds(2f);
         ResultCanvas.SetActive(true);
