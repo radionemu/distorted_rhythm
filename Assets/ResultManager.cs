@@ -121,22 +121,21 @@ public class ResultManager : MonoBehaviour
             for (int i = scorelist.Count - 1; i>=0; i--) {
                 if (string.IsNullOrWhiteSpace(scorelist[i])) scorelist.RemoveAt(i);
             }
+            int s = 1;
             for (int i = 0; i < scorelist.Count(); i++) {
                 string[] rns = scorelist[i].Split(' ');
                 GameObject go = Instantiate(rankCellPrefab, VertRank.transform);
                 if (prevscore >= mScoreMgr.TotalScore && mScoreMgr.TotalScore > int.Parse(rns[2]))
                 {
+                    go.GetComponent<RankCell>().init((s).ToString(), DBManager.username, mScoreMgr.TotalScore.ToString(), true);
+                    pool.Add(go);
+                    rrank = s + adder;
                     adder++;
-                    go.GetComponent<RankCell>().init((i + adder + 1).ToString(), DBManager.username, mScoreMgr.TotalScore.ToString(), true);
-                    pool.Add(go);
-                    rrank = i + adder;
                 }
-                else
-                {
-                    go.GetComponent<RankCell>().init((i + adder + 1).ToString(), rns[1], rns[2]);
-                    pool.Add(go);
-                }
+                go.GetComponent<RankCell>().init((s + adder).ToString(), rns[1], rns[2]);
+                pool.Add(go);
                 prevscore = int.Parse(rns[2]);
+                s++;
             }
             if (adder == 0) { 
                 GameObject go = Instantiate(rankCellPrefab, VertRank.transform);
