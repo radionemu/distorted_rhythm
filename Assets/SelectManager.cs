@@ -28,7 +28,7 @@ public class SelectManager : MonoBehaviour
     void Awake()
     {
         instance = this;
-        isInteractive = true;
+        isInteractive = false;
         SelectCursor = 0;
     }
 
