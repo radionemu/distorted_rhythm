@@ -1,6 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
@@ -23,9 +26,18 @@ public class StartManager : MonoBehaviour
     public Sprite lv5;
     public Sprite lv8;
 
+    Color oricol;
+    Vector3 backgrondpos;
+
+    public Dictionary<int, string> Charts = new();
+    public string targetChart = "";
+
     void Awake()
     {
         instance = this;
+        oricol = Light.color;
+        backgrondpos = Background.transform.localPosition;
+        Charts = new();
     }
     // Start is called before the first frame update
     void Start()
@@ -39,6 +51,12 @@ public class StartManager : MonoBehaviour
         
     }
 
+    public void init(){
+        Light.color = oricol;
+        Background.transform.localPosition = backgrondpos;
+        targetChart = "";
+    }
+
     public IEnumerator Load() {
         StartCanvas.SetActive(true);
         if (SelectManager.GetInstance().SelectCursor == 0)
@@ -49,6 +67,32 @@ public class StartManager : MonoBehaviour
             LV.sprite = lv8;
         yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).IsName("FDIN"));
         yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f);
+
+        string text = "";
+        if (!Charts.ContainsKey(SelectManager.GetInstance().SelectCursor))
+        {
+            WWWForm form = new WWWForm();
+            form.AddField("lv", SelectManager.GetInstance().SelectCursor);
+            UnityWebRequest www = UnityWebRequest.Post("http://106.246.242.58:11345/demo/getlevel", form);
+            yield return www.SendWebRequest();
+            if (www.downloadHandler.text.Length <= 0)
+            {
+                Debug.LogError("Network Disconnected");
+                yield return null;
+            }
+            else
+            {
+                text = www.downloadHandler.text;
+                byte[] bytes = Convert.FromBase64String(text);
+                text = Encoding.UTF8.GetString(bytes);
+            }
+
+            Charts.Add(SelectManager.GetInstance().SelectCursor, text);
+        }
+        else {
+            text = Charts[SelectManager.GetInstance().SelectCursor];
+        }
+        targetChart = text;
 
         //Load
         SelectCanvas.SetActive(false);

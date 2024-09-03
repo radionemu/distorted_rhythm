@@ -88,23 +88,8 @@ public class Play : MonoBehaviour
         isPlay = false;
         //Init Parser
 
-        string text = "";
 
-        WWWForm form = new WWWForm();
-        form.AddField("lv", SelectManager.GetInstance().SelectCursor);
-        UnityWebRequest www = UnityWebRequest.Post("http://localhost:8080/demo/getlevel", form);
-        yield return www.SendWebRequest();
-        if(www.downloadHandler.text.Length<=0){
-            Debug.LogError("Network Disconnected");
-            yield return null;
-        }else{
-            text = www.downloadHandler.text;
-            byte[] bytes = Convert.FromBase64String(text);
-            text = Encoding.UTF8.GetString(bytes);
-        }
-
-        //TODO
-        yield return mNoteParser.ReadFile(text);
+        yield return mNoteParser.ReadFile(StartManager.GetInstance().targetChart);
 
         //init Sync & audio manager
         mSheet = mNoteParser.GetSheet();

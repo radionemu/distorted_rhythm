@@ -26,7 +26,7 @@ public class HowToPlayManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (HowToPlayCanvas.activeSelf && H2PController.GetCurrentAnimatorStateInfo(0).IsName("CanSkip") && Input.GetKeyDown(KeyCode.Return)) {
+        if (HowToPlayCanvas.activeSelf && H2PController.GetCurrentAnimatorStateInfo(0).IsName("SKIP") &&  H2PController.GetCurrentAnimatorStateInfo(0).normalizedTime>=1f && Input.GetKeyDown(KeyCode.Keypad7)) {
             H2PController.SetTrigger("Enter");
             StartCoroutine(uninit());
         }
@@ -40,7 +40,7 @@ public class HowToPlayManager : MonoBehaviour
         yield return new WaitUntil(() => H2PController.GetCurrentAnimatorStateInfo(0).IsName("End"));
         yield return new WaitWhile(() => H2PController.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1.0f);
         HowToPlayCanvas.SetActive(false);
-        StartCoroutine(LoadManager.GetInstance()?.Load(Load));
+        StartCoroutine(LoadManager.GetInstance().Load(Load));
     }
 
     public void Load() {

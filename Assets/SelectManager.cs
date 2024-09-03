@@ -32,6 +32,12 @@ public class SelectManager : MonoBehaviour
         SelectCursor = 0;
     }
 
+    public void init() {
+        isInteractive = false;
+        SelectCursor = 0;
+        LVRoot.transform.localEulerAngles = Vector3.zero;
+    }
+
     // Start is called before the first frame update
     void Start()
     {

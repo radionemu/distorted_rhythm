@@ -14,6 +14,7 @@ public class ResultManager : MonoBehaviour
     public static ResultManager GetInstance() => instance;
 
     public GameObject ResultCanvas;
+    public GameObject F2PCanvas;
     public Animator animator;
     public ScoreManager mScoreMgr;
     public TextMeshProUGUI rank;
@@ -41,6 +42,14 @@ public class ResultManager : MonoBehaviour
         
     }
 
+    void init() {
+        isInteractive = false;
+        isInteractivetwo = false;
+        ti = 0f;
+        tti = 0f;
+        pool = null;
+    }
+
     public float ti = 0f;
     public float tti = 0f;
     // Update is called once per frame
@@ -57,12 +66,16 @@ public class ResultManager : MonoBehaviour
             tti += Time.deltaTime;
         }
         if (isInteractivetwo && (tti >= 10f || Input.GetKeyDown(KeyCode.Keypad7))) {
+            isInteractivetwo = false;
             StartCoroutine(LoadManager.GetInstance().Load(insert));
         }
     }
 
     public void insert() {
         StartCoroutine(InsertRank());
+        ResultCanvas.SetActive(false);
+        F2PCanvas.SetActive(true);
+        StartCoroutine(EndManager.GetInstance().Load());
     }
 
     public IEnumerator InsertRank() { 
@@ -71,7 +84,7 @@ public class ResultManager : MonoBehaviour
         form.AddField("lv", SelectManager.GetInstance().SelectCursor);
         form.AddField("score", mScoreMgr.TotalScore.ToString());
         form.AddField("playerhash", DBManager.userhash);
-        UnityWebRequest www = UnityWebRequest.Post("http://localhost:8080/demo/insertrank", form);
+        UnityWebRequest www = UnityWebRequest.Post("http://106.246.242.58:11345/demo/insertrank", form);
         yield return www.SendWebRequest();
         if(www.downloadHandler.text.Length<=0){
             Debug.LogError("Network Disconnected");
@@ -79,7 +92,7 @@ public class ResultManager : MonoBehaviour
         }else{
 
         }
-
+        isInteractivetwo = false;
 
     }
 
@@ -97,11 +110,14 @@ public class ResultManager : MonoBehaviour
         tti = 0f;
         isInteractive = false;
         isInteractivetwo = false;
+        foreach (GameObject obj in pool){
+            Destroy(obj);
+        }
         pool = new();
         WWWForm form = new WWWForm();
         string text = "";
         form.AddField("lv", SelectManager.GetInstance().SelectCursor);
-        UnityWebRequest www = UnityWebRequest.Post("http://localhost:8080/demo/viewrank", form);
+        UnityWebRequest www = UnityWebRequest.Post("http://106.246.242.58:11345/demo/viewrank", form);
         yield return www.SendWebRequest();
         if(www.downloadHandler.text.Length<=0){
             Debug.LogError("Network Disconnected");
@@ -184,6 +200,7 @@ public class ResultManager : MonoBehaviour
         yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f);
         yield return new WaitForSeconds(1.5f);
         rank.text = GetRank();
+        StartManager.GetInstance().GameplayCanvas.SetActive(false);
         animator.SetTrigger("Load");
         yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).IsName("Load"));
         yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f);

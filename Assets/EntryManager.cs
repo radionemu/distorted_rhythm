@@ -31,7 +31,6 @@ public class EntryManager : MonoBehaviour
         PWNotCorrect = 6,
         ScoreUpdateFail = 7
     };
-
     public NETStatus mStatus = NETStatus.BeforeConnect;
     public ConExcpt mConExpt = ConExcpt.NoConExcpt;
 
@@ -55,10 +54,16 @@ public class EntryManager : MonoBehaviour
     public Button loginButton;
     public Button RegisterButton;
 
+    private static EntryManager instance;
+    public static EntryManager GetInstance() => instance;
+
+    private void Awake() {
+        instance = this;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(Entry());
     }
 
     // Update is called once per frame
@@ -75,10 +80,24 @@ public class EntryManager : MonoBehaviour
         StartCoroutine(Login());
     }
 
-    IEnumerator Entry(){
+    public void CallEntry() {
+        StartCoroutine(Entry());
+    }
+
+    public IEnumerator Entry(){
         yield return StartCoroutine(NetTestProcess());
         yield return StartCoroutine(LoginProcess());
         HowToPlayManager.GetInstance()?.init();
+    }
+
+    public void init() {
+        DBManager.score = 0;
+        DBManager.userhash = "";
+        DBManager.username = "";
+        mStatus = NETStatus.BeforeConnect;
+        mConExpt = ConExcpt.NoConExcpt;
+        NameField.text = "";
+        LoginText.text = "라이브하우스에 오신 걸 환영합니다!\n당신의 닉네임을 알려주세요";
     }
 
     IEnumerator FadeInOutNetTest(bool inout){
@@ -178,7 +197,7 @@ public class EntryManager : MonoBehaviour
 
     IEnumerator CheckNETStatus(){
         WWWForm form = new WWWForm();
-        WWW www = new WWW("http://localhost:8080/demo/networkConnection", form);
+        WWW www = new WWW("http://106.246.242.58:11345/demo/networkConnection", form);
         yield return www;
         if(www.text.Length <= 0){
             Debug.LogError("Connection Time out");
@@ -197,7 +216,7 @@ public class EntryManager : MonoBehaviour
     IEnumerator Register(){
         WWWForm form = new WWWForm();
         form.AddField("player_name", NameField.text);
-        WWW www = new WWW("http://localhost:8080/demo/register", form);
+        WWW www = new WWW("http://106.246.242.58:11345/demo/register", form);
         yield return www;
         if(www.text.Length<=0){
             Debug.LogError("Network Disconnected on Register phase");
@@ -215,7 +234,7 @@ public class EntryManager : MonoBehaviour
     IEnumerator Login(){
         WWWForm form = new WWWForm();
         form.AddField("player_name",NameField.text);
-        WWW www = new WWW("http://localhost:8080/demo/register", form);
+        WWW www = new WWW("http://106.246.242.58:11345/demo/register", form);
         yield return www;
         if(www.text.Length <= 0){
             Debug.LogError("Network Disconnected on Login Phase.");
