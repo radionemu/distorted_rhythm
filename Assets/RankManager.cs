@@ -32,7 +32,7 @@ public class RankManager : MonoBehaviour
             Destroy(obj);
         }
         Lists.Clear();
-        WWW www = new WWW("http://106.246.242.58:11345/demo/rank");
+        WWW www = new WWW("http://"+ServerManager.GetServer()+"/demo/rank");
         yield return www;
         if(www.text[0]=='0'){
             // Debug.Log(www.text);

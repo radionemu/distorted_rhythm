@@ -193,7 +193,7 @@ public class EntryManager : MonoBehaviour
 
     IEnumerator CheckNETStatus(){
         WWWForm form = new WWWForm();
-        WWW www = new WWW("http://106.246.242.58:11345/demo/networkConnection", form);
+        WWW www = new WWW("http://"+ServerManager.GetServer()+"/demo/networkConnection", form);
         yield return www;
         if(www.text.Length <= 0){
             Debug.LogError("Connection Time out");
@@ -212,7 +212,7 @@ public class EntryManager : MonoBehaviour
     IEnumerator Register(){
         WWWForm form = new WWWForm();
         form.AddField("player_name", NameField.text);
-        WWW www = new WWW("http://106.246.242.58:11345/demo/register", form);
+        WWW www = new WWW("http://"+ServerManager.GetServer()+"/demo/register", form);
         yield return www;
         if(www.text.Length<=0){
             Debug.LogError("Network Disconnected on Register phase");
@@ -230,7 +230,7 @@ public class EntryManager : MonoBehaviour
     IEnumerator Login(){
         WWWForm form = new WWWForm();
         form.AddField("player_name",NameField.text);
-        WWW www = new WWW("http://106.246.242.58:11345/demo/register", form);
+        WWW www = new WWW("http://"+ServerManager.GetServer()+"/demo/register", form);
         yield return www;
         if(www.text.Length <= 0){
             Debug.LogError("Network Disconnected on Login Phase.");

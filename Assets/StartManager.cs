@@ -73,7 +73,7 @@ public class StartManager : MonoBehaviour
         {
             WWWForm form = new WWWForm();
             form.AddField("lv", SelectManager.GetInstance().SelectCursor);
-            UnityWebRequest www = UnityWebRequest.Post("http://106.246.242.58:11345/demo/getlevel", form);
+            UnityWebRequest www = UnityWebRequest.Post("http://"+ServerManager.GetServer()+"/demo/getlevel", form);
             yield return www.SendWebRequest();
             if (www.downloadHandler.text.Length <= 0)
             {

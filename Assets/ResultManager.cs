@@ -84,7 +84,7 @@ public class ResultManager : MonoBehaviour
         form.AddField("lv", SelectManager.GetInstance().SelectCursor);
         form.AddField("score", mScoreMgr.TotalScore.ToString());
         form.AddField("playerhash", DBManager.userhash);
-        UnityWebRequest www = UnityWebRequest.Post("http://106.246.242.58:11345/demo/insertrank", form);
+        UnityWebRequest www = UnityWebRequest.Post("http://"+ServerManager.GetServer()+"/demo/insertrank", form);
         yield return www.SendWebRequest();
         if(www.downloadHandler.text.Length<=0){
             Debug.LogError("Network Disconnected");
@@ -117,7 +117,7 @@ public class ResultManager : MonoBehaviour
         WWWForm form = new WWWForm();
         string text = "";
         form.AddField("lv", SelectManager.GetInstance().SelectCursor);
-        UnityWebRequest www = UnityWebRequest.Post("http://106.246.242.58:11345/demo/viewrank", form);
+        UnityWebRequest www = UnityWebRequest.Post("http://"+ServerManager.GetServer()+"/demo/viewrank", form);
         yield return www.SendWebRequest();
         if(www.downloadHandler.text.Length<=0){
             Debug.LogError("Network Disconnected");
@@ -136,7 +136,7 @@ public class ResultManager : MonoBehaviour
         } else { 
             List<string> scorelist = text.Split(',').ToList();
             int adder = 0;
-            int prevscore = -1;
+            int prevscore = 1000000;
             for (int i = scorelist.Count - 1; i>=0; i--) {
                 if (string.IsNullOrWhiteSpace(scorelist[i])) scorelist.RemoveAt(i);
             }
@@ -144,7 +144,7 @@ public class ResultManager : MonoBehaviour
             for (int i = 0; i < scorelist.Count(); i++) {
                 string[] rns = scorelist[i].Split(' ');
                 GameObject go; 
-                if (prevscore >= mScoreMgr.TotalScore && mScoreMgr.TotalScore > int.Parse(rns[2]))
+                if (adder!= 1 && prevscore >= mScoreMgr.TotalScore && mScoreMgr.TotalScore > int.Parse(rns[2]))
                 {
                     go = Instantiate(rankCellPrefab, VertRank.transform);
                     go.GetComponent<RankCell>().init((s).ToString(), DBManager.username, mScoreMgr.TotalScore.ToString(), true);
@@ -162,34 +162,30 @@ public class ResultManager : MonoBehaviour
                 GameObject go = Instantiate(rankCellPrefab, VertRank.transform);
                 go.GetComponent<RankCell>().init((scorelist.Count() + adder + 1).ToString(), DBManager.username, mScoreMgr.TotalScore.ToString(), true);
                 pool.Add(go);
-                rrank = scorelist.Count + adder;
+                rrank = scorelist.Count + adder + 1;
             }
         }
         if (pool.Count > 10) { 
-            if (rrank <= 4)
+            int frontoffset = rrank - 4;
+            int backoffset = rrank + 5;
+            var newpool = pool.ToList();
+            if (frontoffset <= 0)
             {
-                for (int i = 10; i < pool.Count(); i++)
-                {
-                    pool[i].SetActive(false);
-                }
+                newpool.RemoveRange(0, 10);
+                newpool.ForEach(e=>e.SetActive(false));
             }
-            else if (4 < rrank && rrank <= pool.Count - 6)
+            else if (backoffset > pool.Count)
             {
-                for (int i = 0; i < rrank - 4; i++)
-                {
-                    pool[i].SetActive(false);
-                }
-                for (int i = rrank + 6; i < pool.Count - 1; i++)
-                {
-                    pool[i].SetActive(false);
-                }
+                newpool.RemoveRange(pool.Count - 10, 10);
+                newpool.ForEach(e => e.SetActive(false));
             }
             else {
-                for (int i = 0; i < pool.Count - 10; i++) {
-                    pool[i].SetActive(false);
-                }
+                newpool.RemoveRange(rrank - 5, 10);
+                newpool.ForEach(e => e.SetActive(false));
             }
         }
+
+ 
 
 
         LV.sprite = StartManager.GetInstance().LV.sprite;

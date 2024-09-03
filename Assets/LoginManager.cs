@@ -33,7 +33,7 @@ public class LoginManager : MonoBehaviour
         WWWForm form = new WWWForm();
         form.AddField("username", NameField.text);
         form.AddField("password", passwordField.text);
-        WWW www = new WWW("http://106.246.242.58:11345/demo/register", form);
+        WWW www = new WWW("http://"+ServerManager.GetServer()+"/demo/register", form);
         yield return www;
         if(www.text[0] == '0'){
             //work!
@@ -48,7 +48,7 @@ public class LoginManager : MonoBehaviour
         WWWForm form = new WWWForm();
         form.AddField("username",NameField.text);
         form.AddField("password",passwordField.text);
-        WWW www = new WWW("http://106.246.242.58:11345/demo/login", form);
+        WWW www = new WWW("http://"+ServerManager.GetServer()+"/demo/login", form);
         yield return www;
         if(www.text[0] == '0'){
             Debug.Log("Login Successfully");
