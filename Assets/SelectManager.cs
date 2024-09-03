@@ -47,6 +47,7 @@ public class SelectManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (DebugManager.GetInstance().isDebugOn) return;
         if (!isInteractive) return;
         for (int i = 0; i < 3; i++) {
             if (SelectCursor == i) {

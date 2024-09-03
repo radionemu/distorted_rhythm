@@ -51,6 +51,8 @@ public class Play : MonoBehaviour
             mSync.music.Stop();
             StopAllCoroutines();
             Debug.Log("TEST START");
+            TextAsset txtFile = Resources.Load("ADV") as TextAsset;
+            StartManager.GetInstance().targetChart = txtFile.ToString();
             StartCoroutine(InitGameplay());
         }
 
@@ -87,8 +89,6 @@ public class Play : MonoBehaviour
     public IEnumerator InitGameplay(){
         isPlay = false;
         //Init Parser
-
-
         yield return mNoteParser.ReadFile(StartManager.GetInstance().targetChart);
 
         //init Sync & audio manager

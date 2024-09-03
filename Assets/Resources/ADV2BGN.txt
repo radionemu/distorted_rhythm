@@ -1,0 +1,287 @@
+[FileInfo]
+Version:0.0.1
+FileName:青春コンプレックス
+ImageName:Image.jpg
+BPM:190
+beatNom:4
+beatDenom:4
+Offset:0.6
+Introstick:true
+
+[ContentInfo]
+Title:青春コンプレックス
+Artist:結束バンド
+Genre:ALTERNATIVE-ROCK
+Difficulty:3
+
+###NOTE FORMAT###
+#Note(Type, Lane, Section, nom, denom)
+###TYPE###
+# NM : Note
+# CS : Charge Note Start
+# CE : Charge Note End
+# MT : Mute Note
+###CONTROL CODE###
+#SOFLAN(BPM)
+#SOFBEAT(nom, denom)
+
+[NoteInfo]
+#Note(MT, 5, 0, 0, 8)
+#Note(NM, 1, 0, 1, 8)
+Note(NM, 3, 0, 0, 8)
+Note(NM, 3, 0, 3, 8)
+Note(NM, 2, 0, 6, 8)
+
+Note(NM, 2, 2, 0, 8)
+Note(NM, 1, 2, 3, 8)
+Note(NM, 2, 2, 6, 8)
+
+Note(NM, 2, 4, 0, 8)
+Note(NM, 3, 4, 3, 8)
+Note(NM, 4, 4, 6, 8)
+
+##
+Note(NM, 2, 6, 0, 8)
+Note(NM, 1, 6, 3, 8)
+Note(NM, 2, 6, 6, 8)
+
+Note(NM, 3, 8, 0, 8)
+Note(NM, 2, 8, 3, 8)
+Note(NM, 4, 8, 6, 8)
+
+##
+Note(NM, 2, 10, 0, 8)
+Note(NM, 1, 10, 3, 8)
+Note(NM, 2, 10, 6, 8)
+
+Note(NM, 2, 12, 0, 8)
+Note(NM, 3, 12, 3, 8)
+Note(NM, 4, 12, 6, 8)
+
+Note(NM, 3, 14, 0, 8)
+Note(NM, 2, 14, 3, 8)
+Note(NM, 3, 14, 6, 8)
+
+Note(NM, 4, 16, 0, 8)
+Note(NM, 3, 16, 3, 8)
+Note(NM, 2, 16, 6, 8)
+
+Note(NM, 2, 17, 1, 8)
+Note(NM, 1, 17, 3, 8)
+Note(NM, 2, 17, 6, 8)
+
+Note(NM, 4, 18, 0, 8)
+Note(NM, 3, 18, 3, 8)
+Note(NM, 2, 18, 7, 8)
+
+Note(NM, 2, 19, 1, 8)
+Note(NM, 3, 19, 5, 8)
+
+Note(NM, 2, 20, 0, 8)
+Note(NM, 4, 20, 3, 8)
+Note(NM, 4, 20, 5, 8)
+Note(NM, 2, 20, 7, 8)
+
+Note(NM, 2, 22, 0, 8)
+Note(NM, 1, 22, 3, 8)
+Note(NM, 1, 22, 5, 8)
+
+Note(NM, 2, 23, 0, 8)
+Note(NM, 1, 23, 3, 8)
+Note(NM, 1, 23, 5, 8)
+
+Note(NM, 3, 24, 0, 8)
+Note(NM, 4, 24, 3, 8)
+Note(NM, 4, 24, 5, 8)
+
+Note(NM, 4, 25, 1, 8)
+Note(NM, 3, 25, 4, 8)
+
+Note(NM, 2, 26, 0, 8)
+Note(NM, 1, 26, 3, 8)
+Note(NM, 3, 26, 5, 8)
+
+Note(NM, 2, 27, 0, 8)
+Note(NM, 1, 27, 3, 8)
+Note(NM, 2, 27, 5, 8)
+
+Note(NM, 2, 28, 0, 8)
+Note(NM, 3, 28, 3, 8)
+Note(NM, 3, 28, 5, 8)
+
+Note(NM, 2, 29, 0, 8)
+Note(NM, 2, 29, 1, 8)
+Note(NM, 3, 29, 3, 8)
+Note(NM, 4, 29, 6, 8)
+
+Note(NM, 4, 30, 0, 4)
+Note(NM, 4, 30, 1, 4)
+Note(NM, 4, 30, 2, 4)
+Note(NM, 4, 30, 3, 4)
+
+#HIGHLIGHT
+
+Note(NM, 1, 31, 0, 8)
+Note(NM, 3, 31, 4, 8)
+
+Note(NM, 2, 32, 0, 8)
+Note(NM, 4, 32, 4, 8)
+
+Note(NM, 3, 33, 0, 8)
+
+Note(NM, 4, 34, 0, 8)
+Note(NM, 4, 34, 2, 8)
+Note(NM, 4, 34, 4, 8)
+Note(NM, 4, 34, 6, 8)
+
+Note(NM, 1, 35, 0, 8)
+Note(NM, 3, 35, 3, 8)
+
+Note(NM, 2, 36, 0, 8)
+Note(NM, 2, 36, 1, 8)
+Note(NM, 3, 36, 3, 8)
+
+Note(NM, 2, 37, 0, 8)
+Note(NM, 2, 37, 4, 8)
+
+Note(NM, 3, 38, 0, 8)
+Note(NM, 3, 38, 2, 8)
+Note(NM, 3, 38, 4, 8)
+Note(NM, 3, 38, 6, 8)
+
+#HIGHLIGHT 2
+
+Note(NM, 1, 39, 0, 8)
+Note(NM, 3, 39, 4, 8)
+
+Note(NM, 2, 40, 0, 8)
+Note(NM, 4, 40, 4, 8)
+
+Note(NM, 3, 41, 0, 8)
+Note(NM, 3, 41, 6, 8)
+
+Note(NM, 4, 42, 0, 4)
+Note(NM, 2, 42, 2, 4)
+
+Note(NM, 1, 43, 0, 8)
+Note(NM, 3, 43, 3, 8)
+Note(NM, 3, 43, 6, 8)
+
+Note(NM, 4, 44, 0, 8)
+Note(NM, 3, 44, 3, 8)
+
+Note(NM, 3, 45, 0, 4)
+Note(NM, 3, 45, 2, 4)
+
+Note(NM, 3, 46, 0, 8)
+Note(NM, 4, 46, 0, 8)
+Note(NM, 3, 46, 2, 8)
+Note(NM, 4, 46, 2, 8)
+Note(NM, 3, 46, 5, 8)
+Note(NM, 4, 46, 5, 8)
+
+# HIGHLIGHT 3
+Note(NM, 2, 47, 0, 8)
+Note(NM, 3, 47, 0, 8)
+Note(NM, 2, 47, 4, 8)
+Note(NM, 3, 47, 4, 8)
+
+Note(NM, 1, 48, 0, 8)
+Note(NM, 2, 48, 0, 8)
+Note(NM, 3, 48, 4, 8)
+
+Note(NM, 1, 49, 0, 8)
+Note(NM, 2, 49, 0, 8)
+Note(NM, 1, 49, 6, 8)
+Note(NM, 2, 49, 6, 8)
+
+Note(NM, 2, 50, 0, 8)
+Note(NM, 3, 50, 0, 8)
+Note(NM, 2, 50, 6, 8)
+Note(NM, 3, 50, 6, 8)
+
+Note(NM, 1, 51, 0, 4)
+Note(NM, 3, 51, 2, 4)
+
+Note(NM, 2, 52, 0, 4)
+Note(NM, 4, 52, 2, 4)
+
+Note(NM, 1, 53, 0, 8)
+Note(NM, 2, 53, 2, 8)
+Note(NM, 3, 53, 4, 8)
+Note(NM, 4, 53, 6, 8)
+
+Note(NM, 4, 54, 0, 8)
+Note(NM, 4, 54, 3, 8)
+Note(NM, 4, 54, 6, 8)
+
+#HIGHLIGHT 4
+Note(NM, 2, 55, 0, 8)
+Note(NM, 3, 55, 0, 8)
+Note(NM, 2, 55, 4, 8)
+Note(NM, 3, 55, 4, 8)
+
+Note(NM, 1, 56, 0, 8)
+Note(NM, 3, 56, 0, 8)
+Note(NM, 1, 56, 4, 8)
+Note(NM, 3, 56, 4, 8)
+
+Note(NM, 1, 57, 0, 8)
+Note(NM, 2, 57, 0, 8)
+Note(NM, 1, 57, 6, 8)
+Note(NM, 2, 57, 6, 8)
+
+Note(NM, 3, 58, 0, 8)
+Note(NM, 3, 58, 6, 8)
+
+Note(NM, 1, 59, 0, 8)
+Note(NM, 3, 59, 3, 8)
+Note(NM, 2, 59, 6, 8)
+
+Note(NM, 4, 60, 0, 8)
+Note(NM, 3, 60, 3, 8)
+
+Note(NM, 2, 61, 0, 8)
+Note(NM, 3, 61, 4, 8)
+
+Note(NM, 4, 62, 0, 8)
+Note(NM, 3, 62, 0, 8)
+Note(NM, 3, 62, 2, 8)
+Note(NM, 4, 62, 2, 8)
+Note(NM, 4, 62, 5, 8)
+Note(NM, 3, 62, 5, 8)
+
+Note(CS, 4, 63, 0, 8)
+Note(CE, 4, 63, 2, 8)
+Note(NM, 4, 63, 3, 8)
+Note(NM, 2, 63, 7, 8)
+
+Note(NM, 1, 64, 1, 8)
+
+Note(NM, 1, 65, 0, 8)
+Note(NM, 2, 65, 2, 8)
+Note(NM, 3, 65, 4, 8)
+Note(NM, 4, 65, 6, 8)
+
+Note(NM, 1, 66, 0, 8)
+Note(NM, 2, 66, 2, 8)
+Note(NM, 3, 66, 4, 8)
+Note(NM, 4, 66, 6, 8)
+
+Note(NM, 2, 67, 0, 8)
+Note(NM, 4, 67, 3, 8)
+Note(NM, 1, 67, 7, 8)
+
+Note(NM, 3, 68, 1, 8)
+Note(NM, 2, 68, 3, 8)
+
+Note(NM, 1, 69, 0, 8)
+Note(NM, 1, 69, 1, 8)
+Note(NM, 2, 69, 3, 8)
+Note(NM, 2, 69, 4, 8)
+Note(NM, 3, 69, 6, 8)
+Note(NM, 3, 69, 7, 8)
+
+
+
+[EOF]

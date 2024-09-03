@@ -26,6 +26,7 @@ public class HowToPlayManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (DebugManager.GetInstance().isDebugOn) return;
         if (HowToPlayCanvas.activeSelf && H2PController.GetCurrentAnimatorStateInfo(0).IsName("SKIP") &&  H2PController.GetCurrentAnimatorStateInfo(0).normalizedTime>=1f && Input.GetKeyDown(KeyCode.Keypad7)) {
             H2PController.SetTrigger("Enter");
             StartCoroutine(uninit());
@@ -34,6 +35,7 @@ public class HowToPlayManager : MonoBehaviour
 
     public void init(){
         HowToPlayCanvas.SetActive(true);
+        Triangle.SetActive(true);
     }
 
     IEnumerator uninit() {

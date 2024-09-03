@@ -9,8 +9,13 @@ public class PlayerSetting : MonoBehaviour
     public float soundOffset = 0.0f;
     public float noteOffset = 0.0f;
 
-    public float JudgeOffset { get{return soundOffset + musicStartOffset;}}
-    public float DisplayOffset{ get{return noteOffset + musicStartOffset;}}
+    public float JudgeOffset { get { return soundOffset + musicStartOffset; } set { } }
+    public float DisplayOffset{ get{return noteOffset + musicStartOffset;} set { } }
+
+    void Awake()
+    {
+        
+    }
 
     // Start is called before the first frame update
     void Start()

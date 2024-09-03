@@ -12,7 +12,7 @@ public class UIManager : MonoBehaviour
     public GameObject PCUI;
     public GameObject MBUI;
 
-    public GameObject UIS => _ = settingManager.BuildSetting == settingManager.PortMode.Desktop ? PCUI : MBUI;
+    public GameObject UIS => PCUI;
 
     //Title Card
     public TextMeshProUGUI TitleText;
@@ -48,17 +48,6 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         mIManager = GameObject.Find("InputManager").GetComponent<Inputmanager>();   
-
-        Judge = UIS.transform.GetChild(0).GetChild(2).GetComponent<TextMeshProUGUI>();
-        JudgeAnimator = UIS.transform.GetChild(0).GetChild(2).GetComponent<Animator>();
-        Fastslow = UIS.transform.GetChild(0).GetChild(3).GetComponent<TextMeshProUGUI>();
-        JudgeEffect = UIS.transform.GetChild(0).GetChild(1).GetComponent<ParticleSystem>();
-        for(int i=0; i<3; i++)
-            JudgeFXs[i] = UIS.transform.GetChild(0).GetChild(1).GetChild(i).GetComponent<ParticleSystem>();
-        JudgeAnimator = UIS.transform.GetChild(0).GetChild(2).GetComponent<Animator>();
-        for(int i=0; i<4; i++)
-            ComboCounter[i] = UIS.transform.GetChild(0).GetChild(4).GetChild(i).gameObject;
-        ComboCounter[4] = UIS.transform.GetChild(0).GetChild(5).gameObject;
     }
 
     // Update is called once per frame
