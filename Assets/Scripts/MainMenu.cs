@@ -21,7 +21,7 @@ public class MainMenu : MonoBehaviour
     List<GameObject> Lists=new();
 
     private void Start() {
-        StartCoroutine(ViewRank());
+        // StartCoroutine(ViewRank());
     }
 
     public void CallRegister(){
