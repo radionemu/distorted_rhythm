@@ -1,2 +1,2 @@
-# Rhythm_Game
- Unity Project of Rhythm Game
+# Distorted!!
+WIP project(currently writing documents)
