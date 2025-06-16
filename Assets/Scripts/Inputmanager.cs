@@ -78,19 +78,53 @@ public class Inputmanager : MonoBehaviour
 		inputThread.Start();
 	}
 
+
+	bool[] isprev = new bool[4];
+
+	bool isprevStrk1 = false;
+	bool isprevStrk2 = false;
+	bool isprevStrk3 = false;
+	bool isprevStrk4 = false;
 	private void InputThreadFunction()
 	{
 		while (isRunning)
 		{
+			isStroke[0] = false; isStroke[1] = false;
 			for (int i = 0; i < 4; i++)
 			{
 				isDown[i] = (GetAsyncKeyState((int)keysToTrack[i]) & 0x8000) != 0;
 			}
 			isStroke[0] = (GetAsyncKeyState((int)VirtualKeycode.VK_NUMPAD7) & 0x8000) != 0 || (GetAsyncKeyState((int)VirtualKeycode.VK_ALPHA7) & 0x8000) != 0;
 			isStroke[1] = (GetAsyncKeyState((int)VirtualKeycode.VK_NUMPAD8) & 0x8000) != 0 || (GetAsyncKeyState((int)VirtualKeycode.VK_ALPHA8) & 0x8000) != 0;
-			if (isStroke[0] || isStroke[1])
+
+			bool hasDownStroke1 = GetAsyncKeyState((int)VirtualKeycode.VK_NUMPAD7) == unchecked((short)0x8000);
+			bool hasDownStroke2 = GetAsyncKeyState((int)VirtualKeycode.VK_NUMPAD8) == unchecked((short)0x8000);
+			bool hasDownStroke3 = GetAsyncKeyState((int)VirtualKeycode.VK_ALPHA7) == unchecked((short)0x8000);
+			bool hasDownStroke4 = GetAsyncKeyState((int)VirtualKeycode.VK_ALPHA8) == unchecked((short)0x8000);
+
+			bool final1 = hasDownStroke1 && !isprevStrk1;
+			bool final2 = hasDownStroke2 && !isprevStrk2;
+			bool final3 = hasDownStroke3 && !isprevStrk3;
+			bool final4 = hasDownStroke4 && !isprevStrk4;
+
+
+			if (final1 || final2 || final3 || final4)
 			{
 				mJudge.ReqJudgeThread(isDown);
+			}
+
+			if ((isprev[0] != isDown[0]) || (isprev[1] != isDown[1]) || (isprev[2] != isDown[2]) || (isprev[3] != isDown[3]))
+			{
+				mJudge.ReqCharge();
+			}
+
+			isprevStrk1 = hasDownStroke1;
+			isprevStrk2 = hasDownStroke2;
+			isprevStrk3 = hasDownStroke3;
+			isprevStrk4 = hasDownStroke4;
+			for (int i = 0; i < 4; i++)
+			{
+				isprev[i] = isDown[i];
 			}
 
 			Thread.Sleep(1);

@@ -47,10 +47,10 @@ public class Play : MonoBehaviour
 		//     StartCoroutine(InitGameplay());
 		//     sss = false;
 		// }
-		if (isPlay)
-		{
-			Debug.Log(mSync.music.timeSamples - mSync.GetCurrentSampleCountThreadSafe());
-		}
+		// if (isPlay)
+		// {
+		// 	Debug.Log(mSync.music.timeSamples - mSync.GetCurrentSampleCountThreadSafe());
+		// }
 
 		if (Input.GetKeyDown(KeyCode.Slash))
 		{

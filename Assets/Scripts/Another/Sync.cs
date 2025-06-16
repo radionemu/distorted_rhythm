@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using UnityEngine;
 
@@ -36,7 +37,7 @@ public class Sync : MonoBehaviour
 	public float offset = 0.000f;
 	public float offsetPCM = 7000f;
 	public bool isGuidPlaying = true;
-	public float guideTime = 0.000f;
+	public double guideTime = 0.000f;
 	public float guidePCM = 0000f;
 
 	void Start()
@@ -76,24 +77,24 @@ public class Sync : MonoBehaviour
 	public void reqPlayMusic(bool guide)
 	{
 		music.Stop();
-
+		timeThread?.Join();
 		StopAllCoroutines();
 		StartCoroutine(PlayMusic(guide));
 	}
 
 	public IEnumerator PlayMusic(bool guide)
 	{
-		float startTime = Time.time;
+		double startTime = AudioSettings.dspTime;
 		music.timeSamples = (int)offsetPCM;
 		nextSample = 0;
 		int i = 0;
-		Debug.Log(music.timeSamples);
+		// Debug.Log(music.timeSamples);
 		if (guide)
 		{
 			isGuidPlaying = true;
 			while (i < 5)
 			{
-				guideTime = Time.time - startTime; guidePCM = guideTime * frequency;
+				guideTime = AudioSettings.dspTime - startTime; guidePCM = (float)(guideTime * frequency);
 				if (guidePCM >= nextSample)
 				{
 					if (i < 4)
@@ -106,8 +107,14 @@ public class Sync : MonoBehaviour
 			}
 		}
 		yield return new WaitUntil(() => i > 4);
-		Debug.Log("PLAY!");
+		// Debug.Log("PLAY!");
 		music.Play();
+		timeThread = new Thread(TimeThread);
+		timeThread.Priority = System.Threading.ThreadPriority.Highest;
+		timeThread.IsBackground = true;
+		timeThread.Start();
+
+		startDsp = AudioSettings.dspTime;
 		isGuidPlaying = false;
 	}
 
@@ -119,18 +126,44 @@ public class Sync : MonoBehaviour
 	//MultiThreading
 	private long currentSampleCounter = 0;
 	private int i = 1;
+	public double startDsp = 0f;
 
-
-	void OnAudioFilterRead(float[] data, int channels)
+	void Update()
 	{
-		long samplesInThisBuffer = data.Length / channels;
-		// currentSampleCounter += data.Length / channels;
-		Interlocked.Add(ref currentSampleCounter, samplesInThisBuffer);
+		currentSampleCounter = music.timeSamples;
+	}
+
+	// void OnAudioFilterRead(float[] data, int channels)
+	// {
+	// 	long samplesInThisBuffer = data.Length / channels;
+	// 	Interlocked.Add(ref currentSampleCounter, samplesInThisBuffer);
+	// }
+	Thread timeThread;
+	float rest = 0f;
+	public void TimeThread()
+	{
+		currentSampleCounter += (long)(frequency / 1000f);
+		rest += frequency % 1000;
+		if (rest > 1f)
+		{
+			currentSampleCounter++;
+			rest -= 1f;
+		}
+		delayUs(1000);
+	}
+
+	void delayUs(long us)
+	{
+		//Stopwatch 초기화 후 시간 측정 시작
+		Stopwatch startNew = Stopwatch.StartNew();
+		//설정한 us를 비교에 쓰일 Tick값으로 변환
+		long usDelayTick = (us * Stopwatch.Frequency) / 1000000;
+		//변환된 Tick값보다 클때까지 대기 
+		while (startNew.ElapsedTicks < usDelayTick);
 	}
 
 	public long GetCurrentSampleCountThreadSafe()
 	{
-		return (long)AudioSettings.dspTime * frequency;
-		return Interlocked.Read(ref currentSampleCounter);
+		return currentSampleCounter;
 	}
 }

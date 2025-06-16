@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 
@@ -98,6 +98,7 @@ public class Judge : MonoBehaviour
 		OKPCM = (int)(OK * mAudio.frequency / 1000f);
 		MISSPCM = (int)(MISS * mAudio.frequency / 1000f);
 
+		StartCoroutine(JudgeMiss());
 	}
 
 	public bool InitQueue()
@@ -134,7 +135,6 @@ public class Judge : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
-		StartCoroutine(JudgeMiss());
 	}
 
 	void LateUpdate()
@@ -200,31 +200,40 @@ public class Judge : MonoBehaviour
 
 	IEnumerator JudgeMiss()
 	{
-		int sample = mAudio.music.timeSamples;
-		// Debug.Log("sample : "+sample);
-		foreach (Queue<Note> lane in Lanes)
+		while (mAudio.IsPlaying())
 		{
-			if (lane.Count <= 0) continue;
-			Note note = lane.Peek();
-			// Debug.Log(""+GetPCM(note));
-			int qsample = sample - (int)GetPCM(note) - (int)(mAudio.music.clip.frequency * mPsetting.JudgeOffset);
-			if (note.nType == NoteType.CE && qsample >= 0)
+			if (mAudio.isGuidPlaying)
 			{
-				ReqCharge();
+				yield return null;
+				continue;
 			}
-			if (qsample > OKPCM)
+			int sample = (int)mAudio.GetCurrentSampleCountThreadSafe();
+			// Debug.Log("sample : "+sample);
+			foreach (Queue<Note> lane in Lanes)
 			{
-				mUIMan.ReqJudge(JudgeType.MISS, note.lane);
-				mScoreMgr.ReqJudge2Score(JudgeType.MISS, JudgeTiming.SLOW);
-				if (lane.Peek().nType != NoteType.CS)
+				if (lane.Count <= 0) continue;
+				Note note = lane.Peek();
+				// Debug.Log(""+GetPCM(note));
+				int qsample = sample - (int)GetPCM(note) - (int)(mAudio.music.clip.frequency * mPsetting.JudgeOffset);
+				if (note.nType == NoteType.CE && qsample >= 0)
 				{
-					mNoteMgr.ReqDestroy(note.objID);
+					ReqCharge();
 				}
-				lane.Dequeue();
+				if (qsample > OKPCM)
+				{
+					mUIMan.ReqJudge(JudgeType.MISS, note.lane);
+					mScoreMgr.ReqJudge2Score(JudgeType.MISS, JudgeTiming.SLOW);
+					if (lane.Peek().nType != NoteType.CS)
+					{
+						mNoteMgr.ReqDestroy(note.objID);
+					}
+					lane.Dequeue();
+				}
 			}
+
+			yield return null;
 		}
 
-		yield return null;
 	}
 
 	public float GetPCM(Note note)
@@ -295,6 +304,7 @@ public class Judge : MonoBehaviour
 
 		int jSample = cSample - rowPCM - (int)(mAudio.frequency * mPsetting.JudgeOffset);
 		float judgeInterval = (float)jSample / mAudio.frequency;
+		// Debug.Log(judgeInterval+" "+jSample);
 
 		JudgeType judge = JudgeType.UNJUDGE;
 		if (InRange(jSample, PGREATPCM))
