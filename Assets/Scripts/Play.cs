@@ -9,145 +9,157 @@ using UnityEngine.Networking;
 
 public class Play : MonoBehaviour
 {
-    public Sync mSync;
-    public Sheet mSheet;
+	public Sync mSync;
+	public Sheet mSheet;
 
-    public UISwapper mUISwap;
+	public UISwapper mUISwap;
 
-    public ResultUIManager mResult;
+	public ResultUIManager mResult;
 
-    public NoteParse mNoteParser;
-    public NoteManager mNoteManager;
+	public NoteParse mNoteParser;
+	public NoteManager mNoteManager;
 
-    public Judge mJudge;
-    public UIManager mUIMan;
+	public Judge mJudge;
+	public UIManager mUIMan;
 
-    public PlayerSetting mPsetting;
+	public PlayerSetting mPsetting;
 
-    public bool isPlay = false;
+	public bool isPlay = false;
 
-    private bool sss = true;
+	private bool sss = true;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        settingManager.BuildSetting = settingManager.PortMode.Desktop;
-        Application.targetFrameRate = -1;
-        // Debug.Log(mSync.music.clip.length);
-        
-    }
+	// Start is called before the first frame update
+	void Start()
+	{
+		settingManager.BuildSetting = settingManager.PortMode.Desktop;
+		Application.targetFrameRate = -1;
+		// Debug.Log(mSync.music.clip.length);
 
-    // Update is called once per frame
-    void Update()
-    {
-        // if(sss){
-        //     mSync.music.Stop();
-        //     StopAllCoroutines();
-        //     Debug.Log("TEST START");
-        //     StartCoroutine(InitGameplay());
-        //     sss = false;
-        // }
-        if(Input.GetKeyDown(KeyCode.Slash)){
-            mSync.music.Stop();
-            StopAllCoroutines();
-            Debug.Log("TEST START");
-            TextAsset txtFile = Resources.Load("ADV") as TextAsset;
-            StartManager.GetInstance().targetChart = txtFile.ToString();
-            StartCoroutine(InitGameplay());
-        }
+	}
 
-        if(isPlay==true&&mSync.IsPlaying() && Input.GetKeyDown(KeyCode.Return)){
-            mSync.music.Stop();
-            isPlay = false;
-            mResult.UpdateScore();
-            StopCoroutine(CheckMusicEnd());
-            StartCoroutine(ResultManager.GetInstance().Load());
-            // mUISwap.SwapCanvas(mUISwap.Gameplay, mUISwap.Result);
-        }
-    }
+	// Update is called once per frame
+	void Update()
+	{
+		// if(sss){
+		//     mSync.music.Stop();
+		//     StopAllCoroutines();
+		//     Debug.Log("TEST START");
+		//     StartCoroutine(InitGameplay());
+		//     sss = false;
+		// }
+		if (isPlay)
+		{
+			Debug.Log(mSync.music.timeSamples - mSync.GetCurrentSampleCountThreadSafe());
+		}
 
-    public IEnumerator CheckMusicEnd(){
-        while(true){
-            if (!mSync.IsPlaying() && isPlay == true)
-            {
-                isPlay = false;
-                mResult.UpdateScore();
-                StartCoroutine(ResultManager.GetInstance().Load());
-                // mUISwap.SwapCanvas(mUISwap.Gameplay, mUISwap.Result);
-            }
-            yield return new WaitForSeconds(0.1f);
-        }
-    }
+		if (Input.GetKeyDown(KeyCode.Slash))
+		{
+			mSync.music.Stop();
+			StopAllCoroutines();
+			Debug.Log("TEST START");
+			TextAsset txtFile = Resources.Load("ADV") as TextAsset;
+			StartManager.GetInstance().targetChart = txtFile.ToString();
+			StartCoroutine(InitGameplay());
+		}
 
-    public void StartGame() { 
-        mSync.music.Stop();
-        StopAllCoroutines();
-        Debug.Log("TEST START");
-        StartCoroutine(InitGameplay());
-    }
+		if (isPlay == true && mSync.IsPlaying() && Input.GetKeyDown(KeyCode.Return))
+		{
+			mSync.music.Stop();
+			isPlay = false;
+			mResult.UpdateScore();
+			StopCoroutine(CheckMusicEnd());
+			StartCoroutine(ResultManager.GetInstance().Load());
+			// mUISwap.SwapCanvas(mUISwap.Gameplay, mUISwap.Result);
+		}
+	}
 
-    public IEnumerator InitGameplay(){
-        isPlay = false;
-        //Init Parser
-        yield return mNoteParser.ReadFile(StartManager.GetInstance().targetChart);
+	public IEnumerator CheckMusicEnd()
+	{
+		while (true)
+		{
+			if (!mSync.IsPlaying() && isPlay == true)
+			{
+				isPlay = false;
+				mResult.UpdateScore();
+				StartCoroutine(ResultManager.GetInstance().Load());
+				// mUISwap.SwapCanvas(mUISwap.Gameplay, mUISwap.Result);
+			}
+			yield return new WaitForSeconds(0.1f);
+		}
+	}
 
-        //init Sync & audio manager
-        mSheet = mNoteParser.GetSheet();
-        mPsetting.musicStartOffset = mSheet.Offset;
-        yield return mSync.init(mNoteParser.GetSheet());
-        mSync.reqPlayMusic(mSheet.DrumIntro);
+	public void StartGame()
+	{
+		mSync.music.Stop();
+		StopAllCoroutines();
+		Debug.Log("TEST START");
+		StartCoroutine(InitGameplay());
+	}
 
-        //Generate Note
-        yield return mNoteManager.GenerateNote(mSync, mSheet, mUIMan.oColor);
+	public IEnumerator InitGameplay()
+	{
+		isPlay = false;
+		//Init Parser
+		yield return mNoteParser.ReadFile(StartManager.GetInstance().targetChart);
 
-        yield return mUIMan.Init(mSheet);
-        yield return mJudge.InitQueue();
-        // yield return new WaitForSeconds(3f);
-        Debug.Log("isPlay");
-        isPlay = true;
-        StartCoroutine(CheckMusicEnd());
-        yield return null;
-    }
+		//init Sync & audio manager
+		mSheet = mNoteParser.GetSheet();
+		mPsetting.musicStartOffset = mSheet.Offset;
+		yield return mSync.init(mNoteParser.GetSheet());
+		mSync.reqPlayMusic(mSheet.DrumIntro);
+		mJudge.Init();
 
-    public string GetUnicodeString(string input)
-    {
+		//Generate Note
+		yield return mNoteManager.GenerateNote(mSync, mSheet, mUIMan.oColor);
 
-        Encoding encoding = Encoding.GetEncoding(51949);//중국어 간체 
-        var bytest = encoding.GetBytes(input); 
-        var output = encoding.GetString(bytest); 
-        //Console.WriteLine(input); 
-        //Console.WriteLine(output); 
+		yield return mUIMan.Init(mSheet);
+		yield return mJudge.InitQueue();
+		// yield return new WaitForSeconds(3f);
+		Debug.Log("isPlay");
+		isPlay = true;
+		StartCoroutine(CheckMusicEnd());
+		yield return null;
+	}
 
-        List<string> unicodes = new List<string>(); 
+	public string GetUnicodeString(string input)
+	{
 
-        string result = String.Empty; 
+		Encoding encoding = Encoding.GetEncoding(51949);//중국어 간체 
+		var bytest = encoding.GetBytes(input);
+		var output = encoding.GetString(bytest);
+		//Console.WriteLine(input); 
+		//Console.WriteLine(output); 
 
-        if (input != output) 
-        { 
+		List<string> unicodes = new List<string>();
 
-            for (int i = 0; i < input.Length; i += char.IsSurrogatePair(input, i) ? 2 : 1) 
-            { 
-                int codepoint = char.ConvertToUtf32(input, i); 
-                unicodes.Add(String.Format("&#{0}", codepoint)); 
-            } 
-             
-            for (int i = 0; i < input.Length; i++) 
-            { 
+		string result = String.Empty;
 
-                if (input[i].ToString() != output[i].ToString()) 
-                { 
-                    result += unicodes[i]; 
-                } 
+		if (input != output)
+		{
 
-                else 
-                { 
-                    result += input[i]; 
-                } 
-            } 
-        } 
+			for (int i = 0; i < input.Length; i += char.IsSurrogatePair(input, i) ? 2 : 1)
+			{
+				int codepoint = char.ConvertToUtf32(input, i);
+				unicodes.Add(String.Format("&#{0}", codepoint));
+			}
 
-        else result = input; 
+			for (int i = 0; i < input.Length; i++)
+			{
 
-        return result; 
-    }
+				if (input[i].ToString() != output[i].ToString())
+				{
+					result += unicodes[i];
+				}
+
+				else
+				{
+					result += input[i];
+				}
+			}
+		}
+
+		else result = input;
+
+		return result;
+	}
 }

@@ -5,34 +5,36 @@ using UnityEngine;
 public class Sheet : MonoBehaviour
 {
 
-    // [FileInfo]
-    public string Version {set; get;}
-    public string FileName  {set; get;}
-    public string ImageName {set; get;}
-    public float BPM    {set; get;}
-    public float beatNom  {set; get;}
-    public float beatDenom  {set; get;}
-    public float Offset {set; get;}
+	// [FileInfo]
+	public string Version { set; get; }
+	public string FileName { set; get; }
+	public string ImageName { set; get; }
+	public float BPM { set; get; }
+	public float beatNom { set; get; }
+	public float beatDenom { set; get; }
+	public float Offset { set; get; }
 
-    // [Content Info]
-    public string Title {set; get;}
-    public string Artist    {set; get;}
-    public string Genre {set; get;}
-    public int Difficulty   {set; get;}
+	// [Content Info]
+	public string Title { set; get; }
+	public string Artist { set; get; }
+	public string Genre { set; get; }
+	public int Difficulty { set; get; }
 
-    public bool DrumIntro {get; set;}
+	public bool DrumIntro { get; set; }
 
-    // [NoteInfo]
+	// [NoteInfo]
 
-    public List<Note> Notes = new();//init
+	public List<Note> Notes = new();//init
 
-    // [EOF]
-    bool isStringEpsilon(string str){
-        return str.Length == 0;
-    }
+	// [EOF]
+	bool isStringEpsilon(string str)
+	{
+		return str.Length == 0;
+	}
 
-    public bool init(){
-        Notes = new();
-        return true;
-    }
+	public bool init()
+	{
+		Notes = new();
+		return true;
+	}
 }
