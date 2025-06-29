@@ -359,8 +359,8 @@ public class Judge : MonoBehaviour
 				judgeRow.Add(note);
 			}
 		}
-		int jSample = cSample - rowPCM - (int)(mAudio.music.clip.frequency * mPsetting.JudgeOffset);
-		float judgeTiming = (float)jSample / mAudio.music.clip.frequency;
+		int jSample = cSample - rowPCM - (int)(mAudio.frequency * mPsetting.JudgeOffset);
+		float judgeTiming = (float)jSample / mAudio.frequency;
 
 		JudgeType judge = JudgeType.UNJUDGE;
 		if (jSample < GREATPCM && jSample > -GREATPCM)
